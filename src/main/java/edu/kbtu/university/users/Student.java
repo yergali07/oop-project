@@ -26,12 +26,7 @@ public class Student extends User implements Researcher, NewsObserver {
     }
 
     /**
-     * 
-     */
-    private String studentId;
-
-    /**
-     * 
+     *
      */
     private StudentYear year;
 
