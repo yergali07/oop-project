@@ -9,12 +9,15 @@ import edu.kbtu.university.users.User;
 /**
  *
  */
-public class Report {
+public class Report implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor
      */
     public Report() {
+        this.generatedAt = LocalDateTime.now();
     }
 
     /**
@@ -41,68 +44,65 @@ public class Report {
      * @return
      */
     public String getTitle() {
-        // TODO implement here
-        return null;
+        return title;
     }
 
     /**
      * @param title
      */
     public void setTitle(String title) {
-        // TODO implement here
+        this.title = title;
     }
 
     /**
      * @return
      */
     public LocalDateTime getGeneratedAt() {
-        // TODO implement here
-        return null;
+        return generatedAt;
     }
 
     /**
      * @param generatedAt
      */
     public void setGeneratedAt(LocalDateTime generatedAt) {
-        // TODO implement here
+        this.generatedAt = generatedAt;
     }
 
     /**
      * @return
      */
     public String getContent() {
-        // TODO implement here
-        return null;
+        return content;
     }
 
     /**
      * @param content
      */
     public void setContent(String content) {
-        // TODO implement here
+        this.content = content;
     }
 
     /**
      * @return
      */
     public User getGeneratedBy() {
-        // TODO implement here
-        return null;
+        return generatedBy;
     }
 
     /**
      * @param generatedBy
      */
     public void setGeneratedBy(User generatedBy) {
-        // TODO implement here
+        this.generatedBy = generatedBy;
     }
 
     /**
      * @return
      */
     public String toString() {
-        // TODO implement here
-        return null;
+        String author = generatedBy == null ? "system" : generatedBy.getId();
+        return String.format("Report{title='%s', generatedAt=%s, generatedBy=%s, content='%s'}",
+                title, generatedAt, author, content);
     }
 
 }

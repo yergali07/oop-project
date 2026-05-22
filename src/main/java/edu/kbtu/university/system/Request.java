@@ -10,12 +10,17 @@ import edu.kbtu.university.users.User;
 /**
  *
  */
-public class Request {
+public class Request implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor
      */
     public Request() {
+        this.id = UUID.randomUUID().toString();
+        this.status = RequestStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
     }
 
     /**
@@ -52,98 +57,93 @@ public class Request {
      * @return
      */
     public String getId() {
-        // TODO implement here
-        return null;
+        return id;
     }
 
     /**
      * @param id
      */
     public void setId(String id) {
-        // TODO implement here
+        this.id = id;
     }
 
     /**
      * @return
      */
     public User getSender() {
-        // TODO implement here
-        return null;
+        return sender;
     }
 
     /**
      * @param sender
      */
     public void setSender(User sender) {
-        // TODO implement here
+        this.sender = sender;
     }
 
     /**
      * @return
      */
     public String getSubject() {
-        // TODO implement here
-        return null;
+        return subject;
     }
 
     /**
      * @param subject
      */
     public void setSubject(String subject) {
-        // TODO implement here
+        this.subject = subject;
     }
 
     /**
      * @return
      */
     public String getContent() {
-        // TODO implement here
-        return null;
+        return content;
     }
 
     /**
      * @param content
      */
     public void setContent(String content) {
-        // TODO implement here
+        this.content = content;
     }
 
     /**
      * @return
      */
     public RequestStatus getStatus() {
-        // TODO implement here
-        return null;
+        return status;
     }
 
     /**
      * @param status
      */
     public void setStatus(RequestStatus status) {
-        // TODO implement here
+        this.status = status;
     }
 
     /**
      * @return
      */
     public LocalDateTime getCreatedAt() {
-        // TODO implement here
-        return null;
+        return createdAt;
     }
 
     /**
      * @param createdAt
      */
     public void setCreatedAt(LocalDateTime createdAt) {
-        // TODO implement here
+        this.createdAt = createdAt;
     }
 
     /**
      * @return
      */
     public String toString() {
-        // TODO implement here
-        return null;
+        String senderId = sender == null ? "unknown" : sender.getId();
+        return String.format("Request{id='%s', sender=%s, subject='%s', status=%s, createdAt=%s}",
+                id, senderId, subject, status, createdAt);
     }
 
 }

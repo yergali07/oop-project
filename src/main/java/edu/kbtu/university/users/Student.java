@@ -17,6 +17,7 @@ import edu.kbtu.university.news.News;
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
+import edu.kbtu.university.system.UniversitySystem;
 
 /**
  * A student of the university. Implements {@link Researcher} optionally —
@@ -121,7 +122,7 @@ public class Student extends User implements Researcher, NewsObserver {
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be in [1,5]");
         }
-        // TODO (Сержан): forward to UniversitySystem.recordTeacherRating(this, t, rating)
+        UniversitySystem.getInstance().recordTeacherRating(this, t, rating);
     }
 
     @Override

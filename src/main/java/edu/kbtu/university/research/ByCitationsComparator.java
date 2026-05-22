@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * 
  */
-public class ByCitationsComparator {
+public class ByCitationsComparator implements Comparator<ResearchPaper> {
 
     /**
      * Default constructor
@@ -20,8 +20,9 @@ public class ByCitationsComparator {
      * @return
      */
     public int compare(ResearchPaper a, ResearchPaper b) {
-        // TODO implement here
-        return 0;
+        return Integer.compare(
+                b == null ? 0 : b.getCitations(),
+                a == null ? 0 : a.getCitations());
     }
 
 }
