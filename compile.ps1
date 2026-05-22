@@ -1,10 +1,10 @@
 $ErrorActionPreference = "Stop"
 
-$jdk = "C:\Users\Lenovo\Downloads\java-21-openjdk-21.0.4.0.7-1.win.jdk.x86_64\java-21-openjdk-21.0.4.0.7-1.win.jdk.x86_64"
-$javac = Join-Path $jdk "bin\javac.exe"
-
-if (-not (Test-Path $javac)) {
-    throw "JDK compiler not found: $javac"
+# Use javac from PATH. Override by setting $env:JAVA_HOME before invoking.
+$javac = if ($env:JAVA_HOME) {
+    Join-Path $env:JAVA_HOME "bin\javac.exe"
+} else {
+    "javac"
 }
 
 New-Item -ItemType Directory -Force "build\classes" | Out-Null
