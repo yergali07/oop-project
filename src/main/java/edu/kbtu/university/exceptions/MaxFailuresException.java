@@ -1,17 +1,10 @@
 package edu.kbtu.university.exceptions;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
-public class MaxFailuresException {
-
-    /**
-     * Default constructor
-     */
+public class MaxFailuresException extends RuntimeException {
     public MaxFailuresException() {
     }
 
+    public MaxFailuresException(String message) {
+        super(message);
+    }
 }

@@ -12,11 +12,16 @@ import edu.kbtu.university.academics.Transcript;
 import edu.kbtu.university.enums.Major;
 import edu.kbtu.university.enums.Role;
 import edu.kbtu.university.enums.StudentYear;
+import edu.kbtu.university.exceptions.CourseRegistrationException;
+import edu.kbtu.university.exceptions.CreditLimitExceededException;
 import edu.kbtu.university.exceptions.LowHIndexException;
+import edu.kbtu.university.exceptions.MaxFailuresException;
+import edu.kbtu.university.exceptions.PrerequisiteNotMetException;
 import edu.kbtu.university.news.News;
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
+import edu.kbtu.university.system.UniversitySystem;
 
 /**
  * A student of the university. Implements {@link Researcher} optionally —
@@ -40,6 +45,7 @@ public class Student extends User implements Researcher, NewsObserver {
         this.failedCourses = new ArrayList<>();
         this.profile = new ResearchProfile();
         this.transcript = new Transcript();
+        this.transcript.setStudent(this);
     }
 
     public Student(String id, String firstName, String lastName, String email,
@@ -53,6 +59,7 @@ public class Student extends User implements Researcher, NewsObserver {
         this.failedCourses = new ArrayList<>();
         this.profile = new ResearchProfile();
         this.transcript = new Transcript();
+        this.transcript.setStudent(this);
     }
 
     public StudentYear getYear() { return year; }
@@ -95,13 +102,28 @@ public class Student extends User implements Researcher, NewsObserver {
     }
 
     /**
-     * Registers this student on a course. Full business-rule enforcement
-     * (credit limit, prerequisites, failure count) lives in the academic
-     * module — see Фархат's implementation.
+     * Registers this student on a course after checking academic rules:
+     * prerequisites, credit limit, failure count and course capacity.
      */
     public void registerForCourse(Course c) {
-        // TODO (Фархат): enforce CreditLimitExceededException,
-        // PrerequisiteNotMetException, MaxFailuresException, CourseRegistrationException
+        if (c == null) {
+            throw new CourseRegistrationException("Course is not specified");
+        }
+        if (!c.hasPrerequisitesMet(this)) {
+            throw new PrerequisiteNotMetException("Prerequisites are not met");
+        }
+        if (currentCredits + c.getCredits() > 21) {
+            throw new CreditLimitExceededException("Credit limit of 21 exceeded");
+        }
+        if (failedCourses.size() >= 3) {
+            throw new MaxFailuresException("Maximum number of failed courses exceeded");
+        }
+        if (c.isFull()) {
+            throw new CourseRegistrationException("Course has no free seats");
+        }
+
+        c.addStudent(this);
+        currentCredits += c.getCredits();
     }
 
     /**
@@ -110,7 +132,10 @@ public class Student extends User implements Researcher, NewsObserver {
      * Transcript accessor is wired up.
      */
     public List<Mark> viewMarks() {
-        return Collections.emptyList();
+        if (transcript == null || transcript.getMarks() == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(transcript.getMarks().values());
     }
 
     /**
@@ -121,7 +146,7 @@ public class Student extends User implements Researcher, NewsObserver {
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be in [1,5]");
         }
-        // TODO (Сержан): forward to UniversitySystem.recordTeacherRating(this, t, rating)
+        UniversitySystem.getInstance().recordTeacherRating(this, t, rating);
     }
 
     @Override

@@ -8,12 +8,15 @@ import edu.kbtu.university.users.NewsObserver;
 /**
  * 
  */
-public class NewsService {
+public class NewsService implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor
      */
     public NewsService() {
+        this.subscribers = new ArrayList<>();
     }
 
     /**
@@ -27,28 +30,33 @@ public class NewsService {
      * @param o
      */
     public void subscribe(NewsObserver o) {
-        // TODO implement here
+        if (o == null) return;
+        if (subscribers == null) subscribers = new ArrayList<>();
+        if (!subscribers.contains(o)) subscribers.add(o);
     }
 
     /**
      * @param o
      */
     public void unsubscribe(NewsObserver o) {
-        // TODO implement here
+        if (subscribers != null) subscribers.remove(o);
     }
 
     /**
      * @param n
      */
     public void publish(News n) {
-        // TODO implement here
+        notifySubscribers(n);
     }
 
     /**
      * @param n
      */
     public void notifySubscribers(News n) {
-        // TODO implement here
+        if (n == null || subscribers == null) return;
+        for (NewsObserver subscriber : new ArrayList<>(subscribers)) {
+            subscriber.update(n);
+        }
     }
 
 }

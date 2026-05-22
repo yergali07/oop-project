@@ -1,78 +1,80 @@
 package edu.kbtu.university.research;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-/**
- * 
- */
 public class ResearchProfile implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor
-     */
+    private List<ResearchPaper> papers;
+    private List<ResearchProject> projects;
+    private int hIndex;
+
     public ResearchProfile() {
         this.papers = new ArrayList<>();
         this.projects = new ArrayList<>();
         this.hIndex = 0;
     }
 
-    /**
-     *
-     */
-    private List<ResearchPaper> papers;
-
-    /**
-     *
-     */
-    private List<ResearchProject> projects;
-
-    /**
-     *
-     */
-    private int hIndex;
-
     public List<ResearchPaper> getPapers() {
-        return papers;
+        return papers == null ? Collections.emptyList() : papers;
     }
 
     public List<ResearchProject> getProjects() {
-        return projects;
+        return projects == null ? Collections.emptyList() : projects;
     }
 
     public int getHIndex() {
-        return hIndex;
+        return calculateHIndex();
     }
 
-    /**
-     * @return
-     */
     public int calculateHIndex() {
-        // TODO implement here (Сержан) — placeholder returns cached hIndex
+        if (papers == null || papers.isEmpty()) {
+            hIndex = 0;
+            return hIndex;
+        }
+        List<Integer> citations = new ArrayList<>();
+        for (ResearchPaper paper : papers) {
+            citations.add(paper == null ? 0 : paper.getCitations());
+        }
+        citations.sort(Collections.reverseOrder());
+        int h = 0;
+        for (int i = 0; i < citations.size(); i++) {
+            int candidate = i + 1;
+            if (citations.get(i) >= candidate) {
+                h = candidate;
+            } else {
+                break;
+            }
+        }
+        hIndex = h;
         return hIndex;
     }
 
-    /**
-     * @param p
-     */
     public void addPaper(ResearchPaper p) {
-        // TODO implement here
+        if (p == null) return;
+        if (papers == null) papers = new ArrayList<>();
+        if (!papers.contains(p)) {
+            papers.add(p);
+            calculateHIndex();
+        }
     }
 
-    /**
-     * @param pr
-     */
     public void addProject(ResearchProject pr) {
-        // TODO implement here
+        if (pr == null) return;
+        if (projects == null) projects = new ArrayList<>();
+        if (!projects.contains(pr)) {
+            projects.add(pr);
+        }
     }
 
-    /**
-     * @param c
-     */
     public void printPapers(Comparator<ResearchPaper> c) {
-        // TODO implement here
+        if (papers == null) return;
+        Comparator<ResearchPaper> comparator = c == null ? Comparator.naturalOrder() : c;
+        papers.stream().sorted(comparator).forEach(System.out::println);
     }
-
 }

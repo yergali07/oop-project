@@ -1,17 +1,10 @@
 package edu.kbtu.university.exceptions;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
-public class PrerequisiteNotMetException {
-
-    /**
-     * Default constructor
-     */
+public class PrerequisiteNotMetException extends RuntimeException {
     public PrerequisiteNotMetException() {
     }
 
+    public PrerequisiteNotMetException(String message) {
+        super(message);
+    }
 }

@@ -72,20 +72,29 @@ public class Teacher extends Employee implements Researcher {
         if (c != null && !courses.contains(c)) {
             courses.add(c);
         }
+        if (c != null && !c.getInstructors().contains(this)) {
+            c.addInstructor(this);
+        }
     }
 
     /**
-     * Records a mark for a student. Mark storage and the
-     * "teacher actually teaches this course" check live in the academic
-     * module (Фархат). This stub validates inputs and delegates.
+     * Records a mark for a student after checking that this teacher
+     * is assigned to the course.
      */
     public void putMark(Student s, Course c, Mark m) {
-        if (s == null || c == null || m == null) return;
-        if (!courses.contains(c)) {
-            throw new IllegalStateException(
-                "Teacher " + getId() + " does not teach course " + c);
+        if (s == null || c == null || m == null) {
+            throw new IllegalArgumentException("Student, course and mark must not be null");
         }
-        // TODO (Фархат): write mark into student's transcript
+
+        boolean teachesCourse = courses.contains(c) || c.getInstructors().contains(this);
+        if (!teachesCourse) {
+            throw new IllegalArgumentException("Teacher does not teach this course");
+        }
+        if (s.getTranscript() == null) {
+            throw new IllegalArgumentException("Student transcript is not available");
+        }
+
+        s.getTranscript().addMark(c, m);
     }
 
     /**
@@ -93,7 +102,10 @@ public class Teacher extends Employee implements Researcher {
      * course module once {@code Course.getEnrolled()} is exposed.
      */
     public List<Student> viewStudents(Course c) {
-        return Collections.emptyList();
+        if (c == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(c.getEnrolled());
     }
 
     @Override

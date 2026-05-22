@@ -8,13 +8,13 @@ import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.enums.ManagerType;
 import edu.kbtu.university.enums.Role;
 import edu.kbtu.university.system.Report;
+import edu.kbtu.university.system.ReportGenerator;
 import edu.kbtu.university.system.Request;
+import edu.kbtu.university.system.UniversitySystem;
 
 /**
- * Manager-level employee. Business logic (approving registrations, assigning
- * courses to teachers, generating reports, news management) lives in this
- * class but is implemented by Сержан in sprint 2; this skeleton supplies the
- * constructor, accessors, and role.
+ * Manager-level employee. Serzhan owns the integration methods that connect
+ * academic registration, course assignment, reports, news, and requests.
  */
 public class Manager extends Employee {
 
@@ -22,24 +22,9 @@ public class Manager extends Employee {
 
     private ManagerType managerType;
 
-    /** Default constructor (used by serialization). */
     public Manager() {
     }
 
-    /**
-     * Full-state constructor.
-     *
-     * @param id            manager id (typically {@code EMP-####})
-     * @param firstName     first name
-     * @param lastName      last name
-     * @param email         contact email
-     * @param plainPassword plain-text password (hashed before storage)
-     * @param dateOfBirth   date of birth
-     * @param salary        gross monthly salary
-     * @param dateHired     hire date
-     * @param department    organisational unit
-     * @param managerType   the kind of manager (office registrar, academic, etc.)
-     */
     public Manager(String id, String firstName, String lastName, String email,
                    String plainPassword, LocalDate dateOfBirth,
                    double salary, LocalDate dateHired, String department,
@@ -49,70 +34,48 @@ public class Manager extends Employee {
         this.managerType = managerType;
     }
 
-    /**
-     * Returns the manager kind.
-     * @return manager type
-     */
     public ManagerType getManagerType() { return managerType; }
-
-    /**
-     * Updates the manager kind.
-     * @param managerType new manager type
-     */
     public void setManagerType(ManagerType managerType) { this.managerType = managerType; }
 
-    /**
-     * Approves a student's registration on a course.
-     *
-     * @param s student whose registration is being approved
-     * @param c course the student is registering for
-     */
     public void approveRegistration(Student s, Course c) {
-        // TODO (Сержан)
+        if (s == null || c == null) {
+            throw new IllegalArgumentException("student and course must not be null");
+        }
+        s.registerForCourse(c);
+        UniversitySystem.getInstance().addLog(this, "APPROVE_REGISTRATION",
+                "Approved " + s.getId() + " for course " + c);
     }
 
-    /**
-     * Opens a course for student registration.
-     *
-     * @param c course to open for registration
-     */
     public void addCourseForRegistration(Course c) {
-        // TODO (Сержан)
+        UniversitySystem.getInstance().addCourse(c);
+        UniversitySystem.getInstance().addLog(this, "ADD_COURSE", "Opened course " + c);
     }
 
-    /**
-     * Assigns a course to a teacher.
-     *
-     * @param c course to assign
-     * @param t teacher who will deliver the course
-     */
     public void assignCourseToTeacher(Course c, Teacher t) {
-        // TODO (Сержан)
+        if (c == null || t == null) {
+            throw new IllegalArgumentException("course and teacher must not be null");
+        }
+        c.addInstructor(t);
+        t.manageCourse(c);
+        UniversitySystem.getInstance().addLog(this, "ASSIGN_COURSE",
+                "Assigned course " + c + " to teacher " + t.getId());
     }
 
-    /**
-     * Generates an academic performance report.
-     *
-     * @return aggregated academic report
-     */
     public Report generateAcademicReport() {
-        // TODO (Сержан): delegate to ReportGenerator
-        return null;
+        List<Course> courses = UniversitySystem.getInstance().getCourses();
+        Course firstCourse = courses == null || courses.isEmpty() ? null : courses.get(0);
+        return new ReportGenerator().academicReport(firstCourse);
     }
 
-    /** Manages the news subsystem (compose, edit, retract). */
     public void manageNews() {
-        // TODO (Сержан)
+        if (UniversitySystem.getInstance().getNewsService() == null) {
+            UniversitySystem.getInstance().setNewsService(new edu.kbtu.university.news.NewsService());
+        }
     }
 
-    /**
-     * Returns pending requests addressed to this manager.
-     *
-     * @return list of requests awaiting handling
-     */
     public List<Request> viewRequests() {
-        // TODO (Сержан)
-        return Collections.emptyList();
+        List<Request> requests = UniversitySystem.getInstance().getRequests();
+        return requests == null ? Collections.emptyList() : Collections.unmodifiableList(requests);
     }
 
     @Override

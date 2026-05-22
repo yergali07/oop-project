@@ -1,17 +1,10 @@
 package edu.kbtu.university.exceptions;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
-public class CreditLimitExceededException {
-
-    /**
-     * Default constructor
-     */
+public class CreditLimitExceededException extends RuntimeException {
     public CreditLimitExceededException() {
     }
 
+    public CreditLimitExceededException(String message) {
+        super(message);
+    }
 }

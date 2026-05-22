@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * 
  */
-public class ByDateComparator {
+public class ByDateComparator implements Comparator<ResearchPaper> {
 
     /**
      * Default constructor
@@ -20,8 +20,13 @@ public class ByDateComparator {
      * @return
      */
     public int compare(ResearchPaper a, ResearchPaper b) {
-        // TODO implement here
-        return 0;
+        if (a == null && b == null) return 0;
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if (a.getDatePublished() == null && b.getDatePublished() == null) return 0;
+        if (a.getDatePublished() == null) return 1;
+        if (b.getDatePublished() == null) return -1;
+        return b.getDatePublished().compareTo(a.getDatePublished());
     }
 
 }
