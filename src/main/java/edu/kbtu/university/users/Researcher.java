@@ -15,16 +15,22 @@ import edu.kbtu.university.research.ResearchProject;
 public interface Researcher {
 
     /**
+     * Returns the researcher's authored papers.
+     *
      * @return list of papers authored by this researcher
      */
     List<ResearchPaper> getPapers();
 
     /**
+     * Returns the researcher's projects.
+     *
      * @return list of research projects this researcher participates in
      */
     List<ResearchProject> getProjects();
 
     /**
+     * Returns the h-index.
+     *
      * @return the researcher's h-index (max {@code h} with at least
      *         {@code h} papers having {@code >= h} citations)
      */

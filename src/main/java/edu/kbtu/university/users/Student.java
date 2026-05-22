@@ -41,6 +41,7 @@ public class Student extends User implements Researcher, NewsObserver {
     private Transcript transcript;
     private final List<News> receivedNews = new ArrayList<>();
 
+    /** Default constructor (used by serialization). */
     public Student() {
         this.failedCourses = new ArrayList<>();
         this.profile = new ResearchProfile();
@@ -48,6 +49,20 @@ public class Student extends User implements Researcher, NewsObserver {
         this.transcript.setStudent(this);
     }
 
+    /**
+     * Full-state constructor.
+     *
+     * @param id            student id (typically {@code BD-####} for
+     *                      bachelors, {@code MP-####} / {@code PHD-####}
+     *                      for masters / PhD)
+     * @param firstName     first name
+     * @param lastName      last name
+     * @param email         contact email
+     * @param plainPassword plain-text password (hashed before storage)
+     * @param dateOfBirth   date of birth
+     * @param year          academic year
+     * @param major         declared major
+     */
     public Student(String id, String firstName, String lastName, String email,
                    String plainPassword, LocalDate dateOfBirth,
                    StudentYear year, Major major) {
@@ -62,28 +77,85 @@ public class Student extends User implements Researcher, NewsObserver {
         this.transcript.setStudent(this);
     }
 
+    /**
+     * Returns the academic year.
+     * @return academic year
+     */
     public StudentYear getYear() { return year; }
+
+    /**
+     * Updates the academic year.
+     * @param year new academic year
+     */
     public void setYear(StudentYear year) { this.year = year; }
 
+    /**
+     * Returns the declared major.
+     * @return declared major
+     */
     public Major getMajor() { return major; }
+
+    /**
+     * Updates the major.
+     * @param major new major
+     */
     public void setMajor(Major major) { this.major = major; }
 
+    /**
+     * Returns the current GPA.
+     * @return current GPA
+     */
     public double getGpa() { return gpa; }
+
+    /**
+     * Updates the GPA.
+     * @param gpa new GPA
+     */
     public void setGpa(double gpa) { this.gpa = gpa; }
 
+    /**
+     * Returns the enrolled credit count.
+     * @return credit count of currently enrolled courses
+     */
     public int getCurrentCredits() { return currentCredits; }
+
+    /**
+     * Updates the enrolled credit count.
+     * @param currentCredits new credit count
+     */
     public void setCurrentCredits(int currentCredits) { this.currentCredits = currentCredits; }
 
+    /**
+     * Returns the list of failed courses.
+     * @return mutable list of courses the student has failed
+     */
     public List<Course> getFailedCourses() { return failedCourses; }
 
+    /**
+     * Returns the research profile.
+     * @return the research profile (papers, projects, h-index)
+     */
     public ResearchProfile getProfile() { return profile; }
+
+    /**
+     * Returns the transcript.
+     * @return the student's transcript
+     */
     public Transcript getTranscript() { return transcript; }
 
+    /**
+     * Returns the assigned research supervisor.
+     * @return the assigned research supervisor, or {@code null}
+     */
     public Researcher getSupervisor() { return supervisor; }
 
     /**
      * Assigns a research supervisor. Per ТЗ, only fourth-year students may
      * have a supervisor, and the supervisor's h-index must be at least 3.
+     *
+     * @param supervisor the supervisor to assign, or {@code null} to clear
+     * @throws IllegalStateException if the student is not in the fourth year
+     * @throws LowHIndexException if the supervisor's h-index is below 3
      */
     public void setSupervisor(Researcher supervisor) {
         if (supervisor == null) {
@@ -103,7 +175,14 @@ public class Student extends User implements Researcher, NewsObserver {
 
     /**
      * Registers this student on a course after checking academic rules:
-     * prerequisites, credit limit, failure count and course capacity.
+     * prerequisites, credit limit (21), failure count (max 3), and course
+     * capacity.
+     *
+     * @param c course to register on
+     * @throws CourseRegistrationException   if the course is {@code null} or full
+     * @throws PrerequisiteNotMetException   if prerequisites are not satisfied
+     * @throws CreditLimitExceededException  if total credits would exceed 21
+     * @throws MaxFailuresException          if 3 or more courses have been failed
      */
     public void registerForCourse(Course c) {
         if (c == null) {
@@ -127,9 +206,9 @@ public class Student extends User implements Researcher, NewsObserver {
     }
 
     /**
-     * Returns the marks the student has accumulated so far. Storage is owned
-     * by the academic module; this stub returns an empty list until the
-     * Transcript accessor is wired up.
+     * Returns the marks the student has accumulated so far.
+     *
+     * @return list of {@link Mark} entries from the transcript, possibly empty
      */
     public List<Mark> viewMarks() {
         if (transcript == null || transcript.getMarks() == null) {
@@ -139,7 +218,12 @@ public class Student extends User implements Researcher, NewsObserver {
     }
 
     /**
-     * Rates a teacher on a 1..5 scale.
+     * Rates a teacher on a 1..5 scale. The rating is recorded via
+     * {@link UniversitySystem#recordTeacherRating(Student, Teacher, int)}.
+     *
+     * @param t      teacher to rate (no-op if {@code null})
+     * @param rating rating in the range {@code [1,5]}
+     * @throws IllegalArgumentException if {@code rating} is out of range
      */
     public void rateTeacher(Teacher t, int rating) {
         if (t == null) return;
@@ -149,21 +233,25 @@ public class Student extends User implements Researcher, NewsObserver {
         UniversitySystem.getInstance().recordTeacherRating(this, t, rating);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ResearchPaper> getPapers() {
         return profile == null ? Collections.emptyList() : profile.getPapers();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ResearchProject> getProjects() {
         return profile == null ? Collections.emptyList() : profile.getProjects();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHIndex() {
         return profile == null ? 0 : profile.getHIndex();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void publishPaper(ResearchPaper p) {
         if (profile != null && p != null) {
@@ -171,6 +259,7 @@ public class Student extends User implements Researcher, NewsObserver {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void joinProject(ResearchProject pr) {
         if (profile != null && pr != null) {
@@ -178,6 +267,7 @@ public class Student extends User implements Researcher, NewsObserver {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void printPapers(Comparator<ResearchPaper> c) {
         if (profile != null) {
@@ -185,6 +275,7 @@ public class Student extends User implements Researcher, NewsObserver {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void update(News news) {
         if (news != null) {
@@ -192,10 +283,19 @@ public class Student extends User implements Researcher, NewsObserver {
         }
     }
 
+    /**
+     * Returns received news items.
+     *
+     * @return unmodifiable view of news this student has received
+     */
     public List<News> getReceivedNews() {
         return Collections.unmodifiableList(receivedNews);
     }
 
+    /**
+     * Returns this user's role.
+     * @return {@link Role#STUDENT}
+     */
     @Override
     public Role getRole() {
         return Role.STUDENT;
