@@ -9,18 +9,23 @@ import edu.kbtu.university.academics.Transcript;
 import edu.kbtu.university.enums.Major;
 import edu.kbtu.university.enums.Role;
 import edu.kbtu.university.enums.StudentYear;
+import edu.kbtu.university.exceptions.CourseRegistrationException;
+import edu.kbtu.university.exceptions.CreditLimitExceededException;
+import edu.kbtu.university.exceptions.MaxFailuresException;
+import edu.kbtu.university.exceptions.PrerequisiteNotMetException;
 import edu.kbtu.university.news.News;
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
 
 /**
- * 
+ * Represents a student user in the university system.
+ * In the academic module, the student can register for courses and owns a transcript.
  */
 public class Student extends User implements Researcher, NewsObserver {
 
     /**
-     * Default constructor
+     * Creates a student with initialized academic collections and transcript.
      */
     public Student() {
         this.failedCourses = new ArrayList<>();
@@ -69,14 +74,39 @@ public class Student extends User implements Researcher, NewsObserver {
     private Transcript transcript;
 
     /**
-     * @param c
+     * Registers the student for a course after validating academic constraints.
+     *
+     * @param c course to register for
+     * @throws PrerequisiteNotMetException if the student has not passed course prerequisites
+     * @throws CreditLimitExceededException if registration would exceed the 21-credit limit
+     * @throws MaxFailuresException if the student already has three or more failed courses
+     * @throws CourseRegistrationException if the course is null or full
      */
     public void registerForCourse(Course c) {
-        // TODO implement here
+        if (c == null) {
+            throw new CourseRegistrationException("Курс не найден");
+        }
+        if (!c.hasPrerequisitesMet(this)) {
+            throw new PrerequisiteNotMetException("Пререквизиты не пройдены");
+        }
+        if (this.currentCredits + c.getCredits() > 21) {
+            throw new CreditLimitExceededException("Превышен лимит в 21 кредит");
+        }
+        if (failedCourses.size() >= 3) {
+            throw new MaxFailuresException("Превышен лимит провалов (макс 3)");
+        }
+        if (c.isFull()) {
+            throw new CourseRegistrationException("На курсе нет свободных мест");
+        }
+
+        c.addStudent(this);
+        this.currentCredits += c.getCredits();
     }
 
     /**
-     * @return
+     * Returns marks visible to the student.
+     *
+     * @return list of marks
      */
     public List<Mark> viewMarks() {
         // TODO implement here
@@ -84,12 +114,19 @@ public class Student extends User implements Researcher, NewsObserver {
     }
 
     /**
-     * @return
+     * Returns the student's academic transcript.
+     *
+     * @return student transcript
      */
     public Transcript getTranscript() {
         return transcript;
     }
 
+    /**
+     * Returns the list of courses failed by the student.
+     *
+     * @return failed courses
+     */
     public List<Course> getFailedCourses() {
         return failedCourses;
     }
