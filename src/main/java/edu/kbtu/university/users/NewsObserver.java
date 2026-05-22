@@ -1,19 +1,19 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.util.*;
-
 import edu.kbtu.university.news.News;
 
 /**
- * 
+ * Observer (pattern <strong>Observer</strong>) for the news subsystem.
+ * Implementations receive a callback whenever the {@code NewsService}
+ * publishes a new item.
  */
 public interface NewsObserver {
 
-
     /**
-     * @param news
+     * Notification hook invoked by the news service when a new item is
+     * published.
+     *
+     * @param news the news item being delivered
      */
-    public void update(News news);
-
+    void update(News news);
 }
