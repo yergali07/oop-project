@@ -20,6 +20,7 @@ public class Teacher extends Employee implements Researcher {
      * Default constructor
      */
     public Teacher() {
+        this.courses = new ArrayList<>();
     }
 
     /**

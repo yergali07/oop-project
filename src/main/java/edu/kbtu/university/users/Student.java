@@ -23,6 +23,9 @@ public class Student extends User implements Researcher, NewsObserver {
      * Default constructor
      */
     public Student() {
+        this.failedCourses = new ArrayList<>();
+        this.transcript = new Transcript();
+        this.transcript.setStudent(this);
     }
 
     /**
@@ -84,8 +87,11 @@ public class Student extends User implements Researcher, NewsObserver {
      * @return
      */
     public Transcript getTranscript() {
-        // TODO implement here
-        return null;
+        return transcript;
+    }
+
+    public List<Course> getFailedCourses() {
+        return failedCourses;
     }
 
     /**

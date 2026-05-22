@@ -1,6 +1,8 @@
 package edu.kbtu.university.academics;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import edu.kbtu.university.enums.Major;
 import edu.kbtu.university.enums.Semester;
@@ -22,6 +24,10 @@ public class Course {
     private int maxStudents;
 
     public Course() {
+        this.instructors = new ArrayList<>();
+        this.enrolled = new ArrayList<>();
+        this.prerequisites = new ArrayList<>();
+        this.lessons = new ArrayList<>();
     }
 
     public Course(String id, String name, int credits, StudentYear intendedYear,
@@ -34,10 +40,10 @@ public class Course {
         this.intendedYear = intendedYear;
         this.intendedMajor = intendedMajor;
         this.semester = semester;
-        this.instructors = instructors;
-        this.enrolled = enrolled;
-        this.prerequisites = prerequisites;
-        this.lessons = lessons;
+        this.instructors = instructors != null ? instructors : new ArrayList<>();
+        this.enrolled = enrolled != null ? enrolled : new ArrayList<>();
+        this.prerequisites = prerequisites != null ? prerequisites : new ArrayList<>();
+        this.lessons = lessons != null ? lessons : new ArrayList<>();
         this.maxStudents = maxStudents;
     }
 
@@ -171,6 +177,23 @@ public class Course {
     public boolean isFull() {
         // TODO implement here
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Course)) {
+            return false;
+        }
+        Course course = (Course) o;
+        return Objects.equals(id, course.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

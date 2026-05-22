@@ -1,5 +1,7 @@
 package edu.kbtu.university.academics;
 
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,11 +14,12 @@ public class Transcript {
     private int totalCredits;
 
     public Transcript() {
+        this.marks = new HashMap<>();
     }
 
     public Transcript(Student student, Map<Course, Mark> marks, double gpa, int totalCredits) {
         this.student = student;
-        this.marks = marks;
+        this.marks = marks != null ? marks : new HashMap<>();
         this.gpa = gpa;
         this.totalCredits = totalCredits;
     }
@@ -34,7 +37,7 @@ public class Transcript {
     }
 
     public void setMarks(Map<Course, Mark> marks) {
-        this.marks = marks;
+        this.marks = marks != null ? marks : new HashMap<>();
     }
 
     public double getGpa() {
@@ -59,6 +62,7 @@ public class Transcript {
     public double calculateGPA() {
         if (marks == null || marks.isEmpty()) {
             gpa = 0.0;
+            totalCredits = 0;
             return gpa;
         }
 
@@ -69,9 +73,15 @@ public class Transcript {
             Course course = entry.getKey();
             Mark mark = entry.getValue();
 
+            if (course == null || mark == null) {
+                continue;
+            }
+
             totalPoints += mark.getGpaPoints() * course.getCredits();
             creditsSum += course.getCredits();
         }
+
+        totalCredits = creditsSum;
 
         if (creditsSum == 0) {
             gpa = 0.0;
@@ -87,7 +97,16 @@ public class Transcript {
      * @param m
      */
     public void addMark(Course c, Mark m) {
-        // TODO implement here
+        if (c == null || m == null) {
+            return;
+        }
+
+        marks.put(c, m);
+        calculateGPA();
+
+        if (!m.isPassing() && student != null && !student.getFailedCourses().contains(c)) {
+            student.getFailedCourses().add(c);
+        }
     }
 
     /**
@@ -102,8 +121,22 @@ public class Transcript {
      * @return
      */
     public List<Course> getFailedCourses() {
-        // TODO implement here
-        return null;
+        List<Course> failed = new ArrayList<>();
+
+        if (marks == null || marks.isEmpty()) {
+            return failed;
+        }
+
+        for (Map.Entry<Course, Mark> entry : marks.entrySet()) {
+            Course course = entry.getKey();
+            Mark mark = entry.getValue();
+
+            if (course != null && mark != null && !mark.isPassing()) {
+                failed.add(course);
+            }
+        }
+
+        return failed;
     }
 
 }
