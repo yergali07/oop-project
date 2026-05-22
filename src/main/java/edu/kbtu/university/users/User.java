@@ -63,6 +63,9 @@ public abstract class User implements Serializable {
 
     /**
      * Verifies the supplied plain-text password against the stored hash.
+     *
+     * @param pwd plain-text password supplied by the caller
+     * @return {@code true} when the hashes match
      */
     public boolean verifyPassword(String pwd) {
         if (pwd == null || passwordHash == null) return false;
@@ -73,6 +76,10 @@ public abstract class User implements Serializable {
      * Attempts to log this user in. Returns {@code true} when the password
      * matches; throws {@link AuthenticationException} otherwise so the
      * caller (UniversitySystem / Main) can react.
+     *
+     * @param pwd plain-text password
+     * @return {@code true} on successful authentication
+     * @throws AuthenticationException when the password does not match
      */
     public boolean login(String pwd) throws AuthenticationException {
         if (!verifyPassword(pwd)) {
@@ -90,6 +97,8 @@ public abstract class User implements Serializable {
 
     /**
      * Each concrete user reports its role for menu dispatch and reporting.
+     *
+     * @return the {@link Role} of this user
      */
     public abstract Role getRole();
 
