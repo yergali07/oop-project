@@ -8,6 +8,8 @@ import java.util.*;
  */
 public class DataStorage {
 
+    private static final String DEFAULT_FILE = "university-system.ser";
+
     /**
      * Default constructor
      */
@@ -18,15 +20,29 @@ public class DataStorage {
      * @param s
      */
     public static void serialize(UniversitySystem s) {
-        // TODO implement here
+        if (s == null) {
+            throw new IllegalArgumentException("system must not be null");
+        }
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DEFAULT_FILE))) {
+            out.writeObject(s);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not save university system state", e);
+        }
     }
 
     /**
      * @return
      */
     public static UniversitySystem deserialize() {
-        // TODO implement here
-        return null;
+        File file = new File(DEFAULT_FILE);
+        if (!file.exists()) {
+            return null;
+        }
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+            return (UniversitySystem) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException("Could not load university system state", e);
+        }
     }
 
 }

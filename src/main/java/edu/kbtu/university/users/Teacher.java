@@ -1,7 +1,10 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.academics.Mark;
@@ -12,61 +15,71 @@ import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
 
 /**
- * Represents a teacher user in the university system.
- * In the academic module, the teacher manages courses and assigns marks.
+ * A teaching member of staff. Per ТЗ, teachers with the rank
+ * {@link TeacherTitle#PROFESSOR} must also be researchers — this invariant
+ * is enforced in {@link #setTitle(TeacherTitle)}.
  */
 public class Teacher extends Employee implements Researcher {
 
-    /**
-     * Creates a teacher with an initialized course list.
-     */
-    public Teacher() {
-        this.courses = new ArrayList<>();
-    }
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 
-     */
     private TeacherTitle title;
-
-    /**
-     * 
-     */
     private List<Course> courses;
-
-    /**
-     * 
-     */
     private ResearchProfile profile;
 
+    public Teacher() {
+        this.courses = new ArrayList<>();
+        this.profile = new ResearchProfile();
+    }
+
+    public Teacher(String id, String firstName, String lastName, String email,
+                   String plainPassword, LocalDate dateOfBirth,
+                   double salary, LocalDate dateHired, String department,
+                   TeacherTitle title) {
+        super(id, firstName, lastName, email, plainPassword, dateOfBirth,
+              salary, dateHired, department);
+        this.courses = new ArrayList<>();
+        this.profile = new ResearchProfile();
+        setTitle(title);
+    }
+
+    public TeacherTitle getTitle() { return title; }
 
     /**
-     * Returns the courses assigned to the teacher.
-     *
-     * @return list of courses taught by the teacher
+     * Sets the academic title. A {@link TeacherTitle#PROFESSOR} must have a
+     * non-null research profile per ТЗ; if missing one is auto-created so
+     * the invariant holds.
      */
+    public void setTitle(TeacherTitle title) {
+        this.title = title;
+        if (title == TeacherTitle.PROFESSOR && profile == null) {
+            this.profile = new ResearchProfile();
+        }
+    }
+
+    public ResearchProfile getProfile() { return profile; }
+    public void setProfile(ResearchProfile profile) { this.profile = profile; }
+
     public List<Course> viewCourses() {
-        // TODO implement here
-        return null;
+        return Collections.unmodifiableList(courses);
     }
 
     /**
-     * Adds or manages a course assigned to the teacher.
-     *
-     * @param c course to manage
+     * Adds a course to this teacher's load. If the course is already in the
+     * list it is left untouched.
      */
     public void manageCourse(Course c) {
-        // TODO implement here
+        if (c != null && !courses.contains(c)) {
+            courses.add(c);
+        }
+        if (c != null && !c.getInstructors().contains(this)) {
+            c.addInstructor(this);
+        }
     }
 
     /**
-     * Assigns a mark to a student for a course if this teacher teaches the course.
-     *
-     * @param s student receiving the mark
-     * @param c course for which the mark is assigned
-     * @param m mark to assign
-     * @throws IllegalArgumentException if any argument is null, the teacher does not teach
-     *                                  the course, or the student transcript is unavailable
+     * Records a mark for a student after checking that this teacher
+     * is assigned to the course.
      */
     public void putMark(Student s, Course c, Mark m) {
         if (s == null || c == null || m == null) {
@@ -77,7 +90,6 @@ public class Teacher extends Employee implements Researcher {
         if (!teachesCourse) {
             throw new IllegalArgumentException("Teacher does not teach this course");
         }
-
         if (s.getTranscript() == null) {
             throw new IllegalArgumentException("Student transcript is not available");
         }
@@ -86,68 +98,54 @@ public class Teacher extends Employee implements Researcher {
     }
 
     /**
-     * Returns students enrolled in a course visible to the teacher.
-     *
-     * @param c course whose students are requested
-     * @return list of enrolled students
+     * Lists the students enrolled on the given course. Delegates to the
+     * course module once {@code Course.getEnrolled()} is exposed.
      */
     public List<Student> viewStudents(Course c) {
-        // TODO implement here
-        return null;
+        if (c == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(c.getEnrolled());
     }
 
-    /**
-     * @return
-     */
+    @Override
     public List<ResearchPaper> getPapers() {
-        // TODO implement Researcher.getPapers() here
-        return null;
+        return profile == null ? Collections.emptyList() : profile.getPapers();
     }
 
-    /**
-     * @return
-     */
+    @Override
     public List<ResearchProject> getProjects() {
-        // TODO implement Researcher.getProjects() here
-        return null;
+        return profile == null ? Collections.emptyList() : profile.getProjects();
     }
 
-    /**
-     * @return
-     */
+    @Override
     public int getHIndex() {
-        // TODO implement Researcher.getHIndex() here
-        return 0;
+        return profile == null ? 0 : profile.getHIndex();
     }
 
-    /**
-     * @param p
-     */
+    @Override
     public void publishPaper(ResearchPaper p) {
-        // TODO implement Researcher.publishPaper() here
+        if (profile != null && p != null) {
+            profile.addPaper(p);
+        }
     }
 
-    /**
-     * @param pr
-     */
+    @Override
     public void joinProject(ResearchProject pr) {
-        // TODO implement Researcher.joinProject() here
+        if (profile != null && pr != null) {
+            profile.addProject(pr);
+        }
     }
 
-    /**
-     * @param c
-     */
+    @Override
     public void printPapers(Comparator<ResearchPaper> c) {
-        // TODO implement Researcher.printPapers() here
+        if (profile != null) {
+            profile.printPapers(c);
+        }
     }
 
-    /**
-     * Returns the role of this user.
-     * @return Role.TEACHER
-     */
     @Override
     public Role getRole() {
         return Role.TEACHER;
     }
-
 }

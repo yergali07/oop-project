@@ -9,7 +9,9 @@ import edu.kbtu.university.users.User;
 /**
  *
  */
-public class LogEntry {
+public class LogEntry implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor
@@ -46,83 +48,78 @@ public class LogEntry {
      * @return
      */
     public String getId() {
-        // TODO implement here
-        return null;
+        return id;
     }
 
     /**
      * @param id
      */
     public void setId(String id) {
-        // TODO implement here
+        this.id = id;
     }
 
     /**
      * @return
      */
     public User getUser() {
-        // TODO implement here
-        return null;
+        return user;
     }
 
     /**
      * @param user
      */
     public void setUser(User user) {
-        // TODO implement here
+        this.user = user;
     }
 
     /**
      * @return
      */
     public String getAction() {
-        // TODO implement here
-        return null;
+        return action;
     }
 
     /**
      * @param action
      */
     public void setAction(String action) {
-        // TODO implement here
+        this.action = action;
     }
 
     /**
      * @return
      */
     public String getDetails() {
-        // TODO implement here
-        return null;
+        return details;
     }
 
     /**
      * @param details
      */
     public void setDetails(String details) {
-        // TODO implement here
+        this.details = details;
     }
 
     /**
      * @return
      */
     public LocalDateTime getTimestamp() {
-        // TODO implement here
-        return null;
+        return timestamp;
     }
 
     /**
      * @param timestamp
      */
     public void setTimestamp(LocalDateTime timestamp) {
-        // TODO implement here
+        this.timestamp = timestamp;
     }
 
     /**
      * @return
      */
     public String toString() {
-        // TODO implement here
-        return null;
+        String actor = user == null ? "system" : user.getId();
+        return String.format("[%s] %s by %s: %s", timestamp, action, actor, details);
     }
 
 }

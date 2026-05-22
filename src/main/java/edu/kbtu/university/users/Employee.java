@@ -1,65 +1,85 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import edu.kbtu.university.news.News;
 import edu.kbtu.university.system.Request;
+import edu.kbtu.university.system.UniversitySystem;
 
 /**
- * 
+ * Common base for all employed personnel: teachers, managers, admins,
+ * and research-only staff. Employees are also news subscribers and keep
+ * per-instance inboxes for news and internal messages.
  */
 public abstract class Employee extends User implements NewsObserver {
 
-    /**
-     * Default constructor
-     */
+    private static final long serialVersionUID = 1L;
+
+    protected double salary;
+    protected LocalDate dateHired;
+    protected String department;
+    protected final List<News> receivedNews = new ArrayList<>();
+    protected final List<String> messages = new ArrayList<>();
+
     public Employee() {
     }
 
-    /**
-     * 
-     */
-    protected double salary;
+    public Employee(String id, String firstName, String lastName, String email,
+                    String plainPassword, LocalDate dateOfBirth,
+                    double salary, LocalDate dateHired, String department) {
+        super(id, firstName, lastName, email, plainPassword, dateOfBirth);
+        this.salary = salary;
+        this.dateHired = dateHired;
+        this.department = department;
+    }
 
-    /**
-     * 
-     */
-    protected LocalDate dateHired;
+    public double getSalary() { return salary; }
+    public void setSalary(double salary) { this.salary = salary; }
 
-    /**
-     * 
-     */
-    protected String department;
+    public LocalDate getDateHired() { return dateHired; }
+    public void setDateHired(LocalDate dateHired) { this.dateHired = dateHired; }
 
-    /**
-     * @param to 
-     * @param text
-     */
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+
+    public List<News> getReceivedNews() {
+        return Collections.unmodifiableList(receivedNews);
+    }
+
+    public List<String> getMessages() {
+        return Collections.unmodifiableList(messages);
+    }
+
     public void sendMessage(Employee to, String text) {
-        // TODO implement here
+        if (to == null || text == null) return;
+        String stamp = LocalDateTime.now().toString();
+        to.messages.add("[" + stamp + "] from " + getFullName() + ": " + text);
     }
 
-    /**
-     * @param text
-     */
     public void sendComplaint(String text) {
-        // TODO implement here
+        Request r = new Request();
+        r.setSender(this);
+        r.setSubject("Complaint");
+        r.setContent(text);
+        r.setCreatedAt(LocalDateTime.now());
+        sendRequest(r);
     }
 
-    /**
-     * @param r
-     */
     public void sendRequest(Request r) {
-        // TODO implement here
+        if (r == null) return;
+        if (r.getSender() == null) r.setSender(this);
+        if (r.getCreatedAt() == null) r.setCreatedAt(LocalDateTime.now());
+        UniversitySystem.getInstance().addRequest(r);
     }
 
-    /**
-     * @param news
-     */
+    @Override
     public void update(News news) {
-        // TODO implement NewsObserver.update() here
+        if (news != null) {
+            receivedNews.add(news);
+        }
     }
-
 }

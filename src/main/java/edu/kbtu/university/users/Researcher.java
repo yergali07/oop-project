@@ -1,47 +1,54 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchProject;
 
 /**
- * 
+ * Mix-in interface for any user that can publish papers and join research
+ * projects. Per ТЗ, {@code Teacher}s with the rank {@code PROFESSOR} and
+ * {@code ResearchEmployee}s must implement this; {@code Student}s may
+ * optionally implement it (typically masters and PhDs do).
  */
 public interface Researcher {
 
-
-
+    /**
+     * @return list of papers authored by this researcher
+     */
+    List<ResearchPaper> getPapers();
 
     /**
-     * @return
+     * @return list of research projects this researcher participates in
      */
-    public List<ResearchPaper> getPapers();
+    List<ResearchProject> getProjects();
 
     /**
-     * @return
+     * @return the researcher's h-index (max {@code h} with at least
+     *         {@code h} papers having {@code >= h} citations)
      */
-    public List<ResearchProject> getProjects();
+    int getHIndex();
 
     /**
-     * @return
+     * Adds a paper to the researcher's profile.
+     *
+     * @param p paper to publish
      */
-    public int getHIndex();
+    void publishPaper(ResearchPaper p);
 
     /**
-     * @param p
+     * Joins a research project.
+     *
+     * @param pr project to join
      */
-    public void publishPaper(ResearchPaper p);
+    void joinProject(ResearchProject pr);
 
     /**
-     * @param pr
+     * Prints the researcher's papers in the order defined by the comparator
+     * (pattern <strong>Strategy</strong>).
+     *
+     * @param c comparator that orders the papers
      */
-    public void joinProject(ResearchProject pr);
-
-    /**
-     * @param c
-     */
-    public void printPapers(Comparator<ResearchPaper> c);
-
+    void printPapers(Comparator<ResearchPaper> c);
 }

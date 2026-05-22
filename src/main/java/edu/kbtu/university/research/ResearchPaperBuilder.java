@@ -15,6 +15,7 @@ public class ResearchPaperBuilder {
      * Default constructor
      */
     public ResearchPaperBuilder() {
+        this.paper = new ResearchPaper();
     }
 
     /**
@@ -27,8 +28,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder title(String t) {
-        // TODO implement here
-        return null;
+        paper.setTitle(t);
+        return this;
     }
 
     /**
@@ -36,8 +37,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder authors(List<Researcher> a) {
-        // TODO implement here
-        return null;
+        paper.setAuthors(a);
+        return this;
     }
 
     /**
@@ -45,8 +46,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder journal(String j) {
-        // TODO implement here
-        return null;
+        paper.setJournal(j);
+        return this;
     }
 
     /**
@@ -54,8 +55,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder doi(String d) {
-        // TODO implement here
-        return null;
+        paper.setDoi(d);
+        return this;
     }
 
     /**
@@ -63,8 +64,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder datePublished(LocalDate d) {
-        // TODO implement here
-        return null;
+        paper.setDatePublished(d);
+        return this;
     }
 
     /**
@@ -72,8 +73,8 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder citations(int n) {
-        // TODO implement here
-        return null;
+        paper.setCitations(n);
+        return this;
     }
 
     /**
@@ -81,16 +82,17 @@ public class ResearchPaperBuilder {
      * @return
      */
     public ResearchPaperBuilder pages(int n) {
-        // TODO implement here
-        return null;
+        paper.setPages(n);
+        return this;
     }
 
     /**
      * @return
      */
     public ResearchPaper build() {
-        // TODO implement here
-        return null;
+        ResearchPaper built = paper;
+        paper = new ResearchPaper();
+        return built;
     }
 
 }

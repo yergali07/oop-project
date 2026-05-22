@@ -192,7 +192,7 @@ public class Course {
      * @param instructors course instructors
      */
     public void setInstructors(List<Teacher> instructors) {
-        this.instructors = instructors;
+        this.instructors = instructors != null ? instructors : new ArrayList<>();
     }
 
     /**
@@ -210,7 +210,7 @@ public class Course {
      * @param enrolled enrolled students
      */
     public void setEnrolled(List<Student> enrolled) {
-        this.enrolled = enrolled;
+        this.enrolled = enrolled != null ? enrolled : new ArrayList<>();
     }
 
     /**
@@ -228,7 +228,7 @@ public class Course {
      * @param prerequisites prerequisite courses
      */
     public void setPrerequisites(List<Course> prerequisites) {
-        this.prerequisites = prerequisites;
+        this.prerequisites = prerequisites != null ? prerequisites : new ArrayList<>();
     }
 
     /**
@@ -246,7 +246,7 @@ public class Course {
      * @param lessons course lessons
      */
     public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+        this.lessons = lessons != null ? lessons : new ArrayList<>();
     }
 
     /**
