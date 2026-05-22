@@ -50,7 +50,7 @@ public class ResearchProfile implements Serializable {
      * @return
      */
     public int calculateHIndex() {
-        // TODO implement here (Дияр) — placeholder returns cached hIndex
+        // TODO implement here (Сержан) — placeholder returns cached hIndex
         return hIndex;
     }
 

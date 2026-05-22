@@ -13,7 +13,7 @@ import edu.kbtu.university.system.Request;
 /**
  * Manager-level employee. Business logic (approving registrations, assigning
  * courses to teachers, generating reports, news management) lives in this
- * class but is implemented by Дияр in sprint 2; this skeleton supplies the
+ * class but is implemented by Сержан in sprint 2; this skeleton supplies the
  * constructor, accessors, and role.
  */
 public class Manager extends Employee {
@@ -41,34 +41,34 @@ public class Manager extends Employee {
      * Approves a student's registration on a course.
      */
     public void approveRegistration(Student s, Course c) {
-        // TODO (Дияр)
+        // TODO (Сержан)
     }
 
     /**
      * Opens a course for student registration.
      */
     public void addCourseForRegistration(Course c) {
-        // TODO (Дияр)
+        // TODO (Сержан)
     }
 
     /**
      * Assigns a course to a teacher.
      */
     public void assignCourseToTeacher(Course c, Teacher t) {
-        // TODO (Дияр)
+        // TODO (Сержан)
     }
 
     public Report generateAcademicReport() {
-        // TODO (Дияр): delegate to ReportGenerator
+        // TODO (Сержан): delegate to ReportGenerator
         return null;
     }
 
     public void manageNews() {
-        // TODO (Дияр)
+        // TODO (Сержан)
     }
 
     public List<Request> viewRequests() {
-        // TODO (Дияр)
+        // TODO (Сержан)
         return Collections.emptyList();
     }
 

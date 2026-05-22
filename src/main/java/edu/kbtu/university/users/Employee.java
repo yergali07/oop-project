@@ -87,7 +87,7 @@ public abstract class Employee extends User implements NewsObserver {
         if (r == null) return;
         if (r.getSender() == null) r.setSender(this);
         if (r.getCreatedAt() == null) r.setCreatedAt(LocalDateTime.now());
-        // TODO (Дияр): persist via Manager.viewRequests when wired
+        // TODO (Сержан): persist via Manager.viewRequests when wired
     }
 
     /**
