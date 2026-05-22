@@ -5,3 +5,9 @@ target/
 *.iml
 .DS_Store
 *.mdj.bak
+.classpath
+.project
+.settings/
+university-system.ser
+UniversitySystemDemo.launch
+pom.xml
