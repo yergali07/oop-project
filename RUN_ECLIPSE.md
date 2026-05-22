@@ -1,31 +1,32 @@
-# Запуск проекта в Eclipse
+# Запуск проекта
 
-1. Откройте Eclipse.
-2. Выберите `File -> Import -> General -> Existing Projects into Workspace`.
-3. В `Select root directory` укажите папку `oop-project`.
-4. Нажмите `Finish`.
-5. Откройте `src/main/java/edu/kbtu/university/Main.java`.
-6. Запустите файл через `Run As -> Java Application`.
+Проект собирается под Java 17. Основной способ сборки — Maven (`pom.xml`):
 
-Также можно открыть `Run -> Run Configurations...` и выбрать готовую конфигурацию `UniversitySystemDemo`.
+```bash
+mvn compile
+mvn exec:java -Dexec.mainClass=edu.kbtu.university.Main
+```
 
-Проект настроен как обычный Java-проект под Java 17. Maven-файл `pom.xml` также оставлен, поэтому проект можно импортировать и как Maven-проект, если в Eclipse установлен m2e.
+## Eclipse
 
-Если системная команда `java` не работает, используйте найденный portable JDK:
+1. `File -> Import -> Existing Maven Projects` и укажите корень `oop-project`.
+   (Если m2e не установлен, можно импортировать как `Existing Projects into Workspace`,
+   но IDE-файлы `.classpath`/`.project` теперь не коммитятся и сгенерируются локально.)
+2. Откройте `src/main/java/edu/kbtu/university/Main.java`.
+3. `Run As -> Java Application`.
+
+## Windows без Maven
+
+Для Windows-разработчиков добавлены вспомогательные скрипты. По умолчанию они
+берут `java`/`javac` из `PATH`; если нужно указать конкретный JDK — задайте
+`JAVA_HOME` перед запуском:
 
 ```powershell
+$env:JAVA_HOME = "C:\Path\To\JDK"
 .\compile.bat
-.\run-demo.bat
+.\run-demo.bat        # запускает Main с аргументом 'demo' (smoke-сценарий)
+.\run-console.bat     # запускает Main без аргументов
 ```
 
-Для интерактивной консоли с логином:
-
-```powershell
-.\run-console.bat
-```
-
-Для запуска Eclipse с этим JDK:
-
-```powershell
-.\open-eclipse-with-jdk.bat
-```
+`.bat` — тонкие обёртки над одноимёнными `.ps1`. Скрипты компилируют исходники
+в `build\classes\` (этот путь игнорируется git'ом).
