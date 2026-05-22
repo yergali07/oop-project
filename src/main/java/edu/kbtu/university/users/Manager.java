@@ -1,7 +1,8 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.enums.ManagerType;
@@ -10,74 +11,69 @@ import edu.kbtu.university.system.Report;
 import edu.kbtu.university.system.Request;
 
 /**
- * 
+ * Manager-level employee. Business logic (approving registrations, assigning
+ * courses to teachers, generating reports, news management) lives in this
+ * class but is implemented by Сержан in sprint 2; this skeleton supplies the
+ * constructor, accessors, and role.
  */
 public class Manager extends Employee {
 
-    /**
-     * Default constructor
-     */
+    private static final long serialVersionUID = 1L;
+
+    private ManagerType managerType;
+
     public Manager() {
     }
 
-    /**
-     * 
-     */
-    private ManagerType managerType;
+    public Manager(String id, String firstName, String lastName, String email,
+                   String plainPassword, LocalDate dateOfBirth,
+                   double salary, LocalDate dateHired, String department,
+                   ManagerType managerType) {
+        super(id, firstName, lastName, email, plainPassword, dateOfBirth,
+              salary, dateHired, department);
+        this.managerType = managerType;
+    }
+
+    public ManagerType getManagerType() { return managerType; }
+    public void setManagerType(ManagerType managerType) { this.managerType = managerType; }
 
     /**
-     * @param s 
-     * @param c
+     * Approves a student's registration on a course.
      */
     public void approveRegistration(Student s, Course c) {
-        // TODO implement here
+        // TODO (Сержан)
     }
 
     /**
-     * @param c
+     * Opens a course for student registration.
      */
     public void addCourseForRegistration(Course c) {
-        // TODO implement here
+        // TODO (Сержан)
     }
 
     /**
-     * @param c 
-     * @param t
+     * Assigns a course to a teacher.
      */
     public void assignCourseToTeacher(Course c, Teacher t) {
-        // TODO implement here
+        // TODO (Сержан)
     }
 
-    /**
-     * @return
-     */
     public Report generateAcademicReport() {
-        // TODO implement here
+        // TODO (Сержан): delegate to ReportGenerator
         return null;
     }
 
-    /**
-     * 
-     */
     public void manageNews() {
-        // TODO implement here
+        // TODO (Сержан)
     }
 
-    /**
-     * @return
-     */
     public List<Request> viewRequests() {
-        // TODO implement here
-        return null;
+        // TODO (Сержан)
+        return Collections.emptyList();
     }
 
-    /**
-     * Returns the role of this user.
-     * @return Role.MANAGER
-     */
     @Override
     public Role getRole() {
         return Role.MANAGER;
     }
-
 }

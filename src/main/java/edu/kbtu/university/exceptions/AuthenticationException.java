@@ -1,17 +1,21 @@
 package edu.kbtu.university.exceptions;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * 
+ * Thrown when a user fails authentication (invalid credentials, locked account, etc.).
  */
-public class AuthenticationException {
+public class AuthenticationException extends Exception {
 
-    /**
-     * Default constructor
-     */
+    private static final long serialVersionUID = 1L;
+
     public AuthenticationException() {
+        super("Authentication failed");
     }
 
+    public AuthenticationException(String message) {
+        super(message);
+    }
+
+    public AuthenticationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

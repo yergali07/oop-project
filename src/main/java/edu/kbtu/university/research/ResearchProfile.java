@@ -6,37 +6,52 @@ import java.util.*;
 /**
  * 
  */
-public class ResearchProfile {
+public class ResearchProfile implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor
      */
     public ResearchProfile() {
+        this.papers = new ArrayList<>();
+        this.projects = new ArrayList<>();
+        this.hIndex = 0;
     }
 
     /**
-     * 
+     *
      */
     private List<ResearchPaper> papers;
 
     /**
-     * 
+     *
      */
     private List<ResearchProject> projects;
 
     /**
-     * 
+     *
      */
     private int hIndex;
 
+    public List<ResearchPaper> getPapers() {
+        return papers;
+    }
 
+    public List<ResearchProject> getProjects() {
+        return projects;
+    }
+
+    public int getHIndex() {
+        return hIndex;
+    }
 
     /**
      * @return
      */
     public int calculateHIndex() {
-        // TODO implement here
-        return 0;
+        // TODO implement here (Сержан) — placeholder returns cached hIndex
+        return hIndex;
     }
 
     /**
