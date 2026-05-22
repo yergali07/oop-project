@@ -1,7 +1,9 @@
 package edu.kbtu.university.users;
 
-import java.io.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import edu.kbtu.university.enums.Role;
 import edu.kbtu.university.research.ResearchPaper;
@@ -9,73 +11,62 @@ import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
 
 /**
- * 
+ * Employee whose role is exclusively research — does not teach, but
+ * publishes and joins projects.
  */
 public class ResearchEmployee extends Employee implements Researcher {
 
-    /**
-     * Default constructor
-     */
-    public ResearchEmployee() {
-    }
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 
-     */
     private ResearchProfile profile;
 
-    /**
-     * @return
-     */
+    public ResearchEmployee() {
+        this.profile = new ResearchProfile();
+    }
+
+    public ResearchEmployee(String id, String firstName, String lastName, String email,
+                            String plainPassword, LocalDate dateOfBirth,
+                            double salary, LocalDate dateHired, String department) {
+        super(id, firstName, lastName, email, plainPassword, dateOfBirth,
+              salary, dateHired, department);
+        this.profile = new ResearchProfile();
+    }
+
+    public ResearchProfile getProfile() { return profile; }
+    public void setProfile(ResearchProfile profile) { this.profile = profile; }
+
+    @Override
     public List<ResearchPaper> getPapers() {
-        // TODO implement Researcher.getPapers() here
-        return null;
+        return profile == null ? Collections.emptyList() : profile.getPapers();
     }
 
-    /**
-     * @return
-     */
+    @Override
     public List<ResearchProject> getProjects() {
-        // TODO implement Researcher.getProjects() here
-        return null;
+        return profile == null ? Collections.emptyList() : profile.getProjects();
     }
 
-    /**
-     * @return
-     */
+    @Override
     public int getHIndex() {
-        // TODO implement Researcher.getHIndex() here
-        return 0;
+        return profile == null ? 0 : profile.getHIndex();
     }
 
-    /**
-     * @param p
-     */
+    @Override
     public void publishPaper(ResearchPaper p) {
-        // TODO implement Researcher.publishPaper() here
+        if (profile != null && p != null) profile.addPaper(p);
     }
 
-    /**
-     * @param pr
-     */
+    @Override
     public void joinProject(ResearchProject pr) {
-        // TODO implement Researcher.joinProject() here
+        if (profile != null && pr != null) profile.addProject(pr);
     }
 
-    /**
-     * @param c
-     */
+    @Override
     public void printPapers(Comparator<ResearchPaper> c) {
-        // TODO implement Researcher.printPapers() here
+        if (profile != null) profile.printPapers(c);
     }
 
-    /**
-     * Returns the role of this user.
-     * @return Role.RESEARCH_EMPLOYEE
-     */
     @Override
     public Role getRole() {
         return Role.RESEARCH_EMPLOYEE;
     }
-
 }
