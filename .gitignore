@@ -1,8 +1,22 @@
 target/
+build/
 *.class
+
+# IDE
 .idea/
 .vscode/
+.classpath
+.project
+.settings/
+*.launch
 *.iml
+
+# OS
 .DS_Store
+
+# Backups / generated
+*.bak
 *.mdj.bak
-/.metadata/
+
+# Serialized runtime state
+*.ser
