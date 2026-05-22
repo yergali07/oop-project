@@ -141,8 +141,28 @@ public class Course {
      * @return
      */
     public boolean hasPrerequisitesMet(Student s) {
-        // TODO
-        return false;
+        if (prerequisites == null || prerequisites.isEmpty()) {
+            return true;
+        }
+
+        if (s == null || s.getTranscript() == null || s.getTranscript().getMarks() == null) {
+            return false;
+        }
+
+        Transcript transcript = s.getTranscript();
+
+        for (Course prereq : prerequisites) {
+            if (!transcript.getMarks().containsKey(prereq)) {
+                return false;
+            }
+
+            Mark mark = transcript.getMarks().get(prereq);
+            if (mark == null || !mark.isPassing()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -21,9 +21,7 @@ public class Mark {
         this.totalScore = totalScore;
     }
 
-    /**
-     *
-     */
+
     public String getStudentId() {
         return studentId;
     }
@@ -76,7 +74,7 @@ public class Mark {
     }
 
     public void calculateTotal() {
-        this.totalScore = att1 * 0.3 + att2 * 0.3 + finalScore * 0.4;
+        this.totalScore = att1 + att2 + finalScore;
     }
 
     public double calculateTotalScore() {
@@ -85,37 +83,48 @@ public class Mark {
     }
 
     public String getLetterGrade() {
-        if (totalScore >= 95) {
+        calculateTotal();
+
+        if (att1 + att2 <= 29.5) {
+            return "F";
+        }
+        if (finalScore <= 9.5) {
+            return "F";
+        }
+        if (finalScore <= 19.5) {
+            return "FX";
+        }
+        if (totalScore < 50.0) {
+            return "F";
+        }
+        if (totalScore >= 95.0) {
             return "A";
         }
-        if (totalScore >= 90) {
+        if (totalScore >= 90.0) {
             return "A-";
         }
-        if (totalScore >= 85) {
+        if (totalScore >= 85.0) {
             return "B+";
         }
-        if (totalScore >= 80) {
+        if (totalScore >= 80.0) {
             return "B";
         }
-        if (totalScore >= 75) {
+        if (totalScore >= 75.0) {
             return "B-";
         }
-        if (totalScore >= 70) {
+        if (totalScore >= 70.0) {
             return "C+";
         }
-        if (totalScore >= 65) {
+        if (totalScore >= 65.0) {
             return "C";
         }
-        if (totalScore >= 60) {
+        if (totalScore >= 60.0) {
             return "C-";
         }
-        if (totalScore >= 55) {
+        if (totalScore >= 55.0) {
             return "D+";
         }
-        if (totalScore >= 50) {
-            return "D";
-        }
-        return "F";
+        return "D";
     }
 
     public double getGpaPoints() {
@@ -146,6 +155,7 @@ public class Mark {
     }
 
     public boolean isPassing() {
-        return totalScore >= 50;
+        String grade = getLetterGrade();
+        return !grade.equals("F") && !grade.equals("FX");
     }
 }

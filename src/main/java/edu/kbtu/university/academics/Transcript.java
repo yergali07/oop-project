@@ -57,8 +57,29 @@ public class Transcript {
      * @return
      */
     public double calculateGPA() {
-        // TODO implement here
-        return 0.0d;
+        if (marks == null || marks.isEmpty()) {
+            gpa = 0.0;
+            return gpa;
+        }
+
+        double totalPoints = 0.0;
+        int creditsSum = 0;
+
+        for (Map.Entry<Course, Mark> entry : marks.entrySet()) {
+            Course course = entry.getKey();
+            Mark mark = entry.getValue();
+
+            totalPoints += mark.getGpaPoints() * course.getCredits();
+            creditsSum += course.getCredits();
+        }
+
+        if (creditsSum == 0) {
+            gpa = 0.0;
+            return gpa;
+        }
+
+        gpa = totalPoints / creditsSum;
+        return gpa;
     }
 
     /**

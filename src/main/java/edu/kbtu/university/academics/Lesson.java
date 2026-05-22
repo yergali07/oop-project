@@ -76,11 +76,14 @@ public class Lesson {
     }
 
     public LocalTime getEndTime() {
-        return null;
+        return startTime.plusMinutes(durationMinutes);
     }
 
     public boolean conflictsWith(Lesson other) {
-        return false;
+        return this.day == other.day
+                && this.room.equals(other.room)
+                && this.startTime.isBefore(other.getEndTime())
+                && other.getStartTime().isBefore(this.getEndTime());
     }
 
     @Override
