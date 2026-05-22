@@ -34,11 +34,11 @@ public final class UserFactory {
     private static String studentId(StudentYear year) {
         // Years 1-4 are bachelors per ТЗ; masters/PhD live outside the
         // StudentYear enum and are created via the dedicated helpers below.
-        return String.format("BD-%04d", BACHELOR_SEQ.incrementAndGet());
+        return String.format("BD%04d", BACHELOR_SEQ.incrementAndGet());
     }
 
     private static String employeeId() {
-        return String.format("EMP-%04d", EMPLOYEE_SEQ.incrementAndGet());
+        return String.format("EMP%04d", EMPLOYEE_SEQ.incrementAndGet());
     }
 
     public static Student createStudent(String firstName, String lastName, String email,
@@ -49,14 +49,14 @@ public final class UserFactory {
 
     public static Student createMastersStudent(String firstName, String lastName, String email,
                                                String password, LocalDate dob, Major major) {
-        String id = String.format("MP-%04d", MASTER_SEQ.incrementAndGet());
+        String id = String.format("MP%04d", MASTER_SEQ.incrementAndGet());
         Student s = new Student(id, firstName, lastName, email, password, dob, null, major);
         return s;
     }
 
     public static Student createPhdStudent(String firstName, String lastName, String email,
                                            String password, LocalDate dob, Major major) {
-        String id = String.format("PHD-%04d", PHD_SEQ.incrementAndGet());
+        String id = String.format("PHD%04d", PHD_SEQ.incrementAndGet());
         Student s = new Student(id, firstName, lastName, email, password, dob, null, major);
         return s;
     }
