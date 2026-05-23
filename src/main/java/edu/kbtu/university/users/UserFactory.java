@@ -14,10 +14,10 @@ import edu.kbtu.university.enums.TeacherTitle;
  * Factory (pattern <strong>Factory</strong>) for creating concrete
  * {@link User} subclasses with auto-generated, prefix-tagged IDs:
  * <ul>
- *   <li>{@code BD-####} — bachelor students</li>
- *   <li>{@code MP-####} — masters students</li>
- *   <li>{@code PHD-####} — PhD students</li>
- *   <li>{@code EMP-####} — every employee subtype (teacher, manager,
+ *   <li>{@code BD####} — bachelor students</li>
+ *   <li>{@code MP####} — masters students</li>
+ *   <li>{@code PHD####} — PhD students</li>
+ *   <li>{@code EMP####} — every employee subtype (teacher, manager,
  *       admin, research employee)</li>
  * </ul>
  */

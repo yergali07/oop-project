@@ -9,7 +9,9 @@ import edu.kbtu.university.enums.UrgencyLevel;
 import edu.kbtu.university.users.User;
 
 /**
- * 
+ * Domain object for an internal news announcement. Distributed to
+ * {@link edu.kbtu.university.users.NewsObserver} subscribers via
+ * {@link NewsService} (Observer pattern).
  */
 public class News implements Serializable {
 

@@ -7,7 +7,9 @@ import java.util.*;
 import edu.kbtu.university.users.User;
 
 /**
- *
+ * Single audit log row recorded by
+ * {@link UniversitySystem#addLog(User, String, String)}. Captures who did
+ * what, with free-form details and a timestamp.
  */
 public class LogEntry implements Serializable {
 

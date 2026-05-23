@@ -2,6 +2,11 @@ package edu.kbtu.university.system;
 
 import edu.kbtu.university.academics.Course;
 
+/**
+ * Builds {@link Report} instances for different facets of the system —
+ * academic performance per course, marks summary, and research output.
+ * Used by {@link edu.kbtu.university.users.Manager#generateAcademicReport()}.
+ */
 public class ReportGenerator {
 
     public ReportGenerator() {

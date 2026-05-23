@@ -8,7 +8,10 @@ import edu.kbtu.university.enums.RequestStatus;
 import edu.kbtu.university.users.User;
 
 /**
- *
+ * Inbound request from an {@link edu.kbtu.university.users.Employee} to
+ * a {@link edu.kbtu.university.users.Manager} — e.g. a complaint, a
+ * change request, or an academic petition. Lifecycle is tracked through
+ * {@link RequestStatus}.
  */
 public class Request implements Serializable {
 

@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 
+ * Strategy (pattern <strong>Strategy</strong>) — orders {@link ResearchPaper}
+ * instances by citation count, most-cited first.
  */
 public class ByCitationsComparator implements Comparator<ResearchPaper> {
 

@@ -6,7 +6,9 @@ import java.util.*;
 import edu.kbtu.university.users.NewsObserver;
 
 /**
- * 
+ * Publisher side of the Observer pattern for university news. Keeps the
+ * list of {@link NewsObserver} subscribers and pushes every published
+ * {@link News} item to all of them.
  */
 public class NewsService implements Serializable {
 
