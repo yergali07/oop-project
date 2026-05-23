@@ -1,17 +1,18 @@
 package edu.kbtu.university.exceptions;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * 
+ * Thrown when a non-{@code Researcher} user attempts to join a
+ * {@link edu.kbtu.university.research.ResearchProject}.
  */
-public class NotAResearcherException {
+public class NotAResearcherException extends RuntimeException {
 
-    /**
-     * Default constructor
-     */
+    private static final long serialVersionUID = 1L;
+
     public NotAResearcherException() {
+        super("User is not a researcher");
     }
 
+    public NotAResearcherException(String message) {
+        super(message);
+    }
 }

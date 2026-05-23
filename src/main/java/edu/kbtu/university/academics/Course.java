@@ -1,5 +1,6 @@
 package edu.kbtu.university.academics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,10 @@ import edu.kbtu.university.users.Teacher;
  * Represents an academic course in the university system.
  * Stores course metadata, instructors, enrolled students, prerequisites and lessons.
  */
-public class Course {
+public class Course implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String name;
     private int credits;
