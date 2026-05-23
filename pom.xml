@@ -27,6 +27,30 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <!--
+                        Skip the "missing" doclint category so trivial accessors
+                        on POJOs (News / Request / LogEntry / etc.) do not flood
+                        the build with warnings while still catching real
+                        problems (broken HTML, dangling @link references,
+                        bad @param names, accessibility).
+
+                        Generated HTML lives under target/reports/apidocs/ —
+                        copy this directory into the submission ZIP as docs/.
+                    -->
+                    <doclint>all,-missing</doclint>
+                    <quiet>true</quiet>
+                    <show>protected</show>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <charset>UTF-8</charset>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
+

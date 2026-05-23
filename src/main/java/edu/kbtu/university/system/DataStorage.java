@@ -4,7 +4,9 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 
+ * Persistence helper for the {@link UniversitySystem} singleton. Reads
+ * and writes the entire system graph to a serialized blob on disk
+ * (default path {@code university-system.ser}).
  */
 public class DataStorage {
 

@@ -8,6 +8,14 @@ import java.util.Objects;
 
 import edu.kbtu.university.users.Researcher;
 
+/**
+ * IEEE-style research paper record. Carries the nine bibliographic fields
+ * required by ТЗ: title, authors, journal, DOI, publication date, citation
+ * count, page count, abstract text, keywords. Built fluently via
+ * {@link ResearchPaperBuilder}; ordered by the
+ * {@link ByCitationsComparator} / {@link ByDateComparator} /
+ * {@link ByPagesComparator} strategies.
+ */
 public class ResearchPaper implements Comparable<ResearchPaper>, Serializable {
 
     private static final long serialVersionUID = 1L;

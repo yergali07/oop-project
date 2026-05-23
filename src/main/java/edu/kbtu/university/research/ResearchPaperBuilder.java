@@ -7,7 +7,20 @@ import java.util.*;
 import edu.kbtu.university.users.Researcher;
 
 /**
- * 
+ * Builder (pattern <strong>Builder</strong>) for {@link ResearchPaper}.
+ * Each setter returns {@code this} for fluent chaining; {@link #build()}
+ * returns the assembled paper and resets the internal state so the same
+ * builder instance can be reused.
+ *
+ * <p>Example:
+ * <pre>{@code
+ * ResearchPaper p = new ResearchPaperBuilder()
+ *     .title("OOP Patterns")
+ *     .authors(List.of(teacher))
+ *     .journal("IEEE")
+ *     .citations(42)
+ *     .build();
+ * }</pre>
  */
 public class ResearchPaperBuilder {
 

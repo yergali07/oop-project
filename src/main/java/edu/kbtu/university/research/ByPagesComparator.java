@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 
+ * Strategy (pattern <strong>Strategy</strong>) — orders {@link ResearchPaper}
+ * instances by page count, longest first.
  */
 public class ByPagesComparator implements Comparator<ResearchPaper> {
 

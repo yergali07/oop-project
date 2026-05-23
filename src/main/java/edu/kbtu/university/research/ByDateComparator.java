@@ -4,7 +4,9 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 
+ * Strategy (pattern <strong>Strategy</strong>) — orders {@link ResearchPaper}
+ * instances by publication date, most recent first. {@code null} dates and
+ * {@code null} papers sort to the end.
  */
 public class ByDateComparator implements Comparator<ResearchPaper> {
 

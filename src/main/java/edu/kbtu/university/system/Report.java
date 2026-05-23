@@ -7,7 +7,9 @@ import java.util.*;
 import edu.kbtu.university.users.User;
 
 /**
- *
+ * Plain-text report (title, content, author, timestamp) produced by
+ * {@link ReportGenerator} and returned by
+ * {@link edu.kbtu.university.users.Manager#generateAcademicReport()}.
  */
 public class Report implements Serializable {
 
