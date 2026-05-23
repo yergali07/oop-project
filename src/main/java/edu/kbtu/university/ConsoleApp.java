@@ -2,15 +2,21 @@ package edu.kbtu.university;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import edu.kbtu.university.academics.Course;
+import edu.kbtu.university.academics.Lesson;
 import edu.kbtu.university.academics.Mark;
+import edu.kbtu.university.enums.LessonType;
 import edu.kbtu.university.enums.Major;
 import edu.kbtu.university.enums.ManagerType;
+import edu.kbtu.university.enums.RoomType;
 import edu.kbtu.university.enums.Semester;
 import edu.kbtu.university.enums.StudentYear;
 import edu.kbtu.university.enums.TeacherTitle;
@@ -21,6 +27,9 @@ import edu.kbtu.university.research.ByPagesComparator;
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchPaperBuilder;
 import edu.kbtu.university.system.LogEntry;
+import edu.kbtu.university.system.RecommendationLetter;
+import edu.kbtu.university.system.Report;
+import edu.kbtu.university.system.ScheduleGenerator;
 import edu.kbtu.university.system.UniversitySystem;
 import edu.kbtu.university.users.Admin;
 import edu.kbtu.university.users.Manager;
@@ -162,6 +171,8 @@ public final class ConsoleApp {
             System.out.println("3) List users");
             System.out.println("4) View logs");
             System.out.println("5) Save state");
+            System.out.println("6) Search users by regex (bonus)");
+            System.out.println("7) Search courses by regex (bonus)");
             System.out.println("0) Logout");
             switch (prompt("Choice: ")) {
                 case "1": addUser(admin); break;
@@ -169,9 +180,43 @@ public final class ConsoleApp {
                 case "3": listUsers(); break;
                 case "4": viewLogs(admin); break;
                 case "5": sys.saveState(); System.out.println("Saved."); break;
+                case "6": searchUsersByRegex(); break;
+                case "7": searchCoursesByRegex(); break;
                 case "0": return;
                 default: System.out.println("Unknown option.");
             }
+        }
+    }
+
+    private void searchUsersByRegex() {
+        try {
+            List<User> matches = sys.findUsersByRegex(prompt("  Regex: "));
+            if (matches.isEmpty()) {
+                System.out.println("  (no matches)");
+            } else {
+                for (User u : matches) {
+                    System.out.printf("  %-8s  %-18s  %s  <%s>%n",
+                            u.getId(), u.getRole(), u.getFullName(), u.getEmail());
+                }
+            }
+        } catch (java.util.regex.PatternSyntaxException e) {
+            System.out.println("  Invalid regex: " + e.getDescription());
+        }
+    }
+
+    private void searchCoursesByRegex() {
+        try {
+            List<Course> matches = sys.findCoursesByRegex(prompt("  Regex: "));
+            if (matches.isEmpty()) {
+                System.out.println("  (no matches)");
+            } else {
+                for (Course c : matches) {
+                    System.out.printf("  %-8s  %s (credits=%d)%n",
+                            c.getId(), c.getName(), c.getCredits());
+                }
+            }
+        } catch (java.util.regex.PatternSyntaxException e) {
+            System.out.println("  Invalid regex: " + e.getDescription());
         }
     }
 
@@ -264,6 +309,7 @@ public final class ConsoleApp {
             System.out.println("4) View incoming requests");
             System.out.println("5) Generate academic report");
             System.out.println("6) Save state");
+            System.out.println("7) Generate weekly schedule (bonus)");
             System.out.println("0) Logout");
             switch (prompt("Choice: ")) {
                 case "1": addCourse(manager); break;
@@ -276,11 +322,62 @@ public final class ConsoleApp {
                     System.out.println("--- " + manager.generateAcademicReport() + " ---");
                     break;
                 case "6": sys.saveState(); System.out.println("Saved."); break;
+                case "7": generateSchedule(); break;
                 case "0": return;
                 default: System.out.println("Unknown option.");
             }
         }
     }
+
+    private void generateSchedule() {
+        Course c = pickCourse();
+        if (c == null) return;
+        if (c.getInstructors().isEmpty()) {
+            System.out.println("  Course has no instructor — assign one first.");
+            return;
+        }
+        Teacher instructor = c.getInstructors().get(0);
+        int nLectures = (int) promptDouble("  Number of weekly lectures: ");
+        int nPractices = (int) promptDouble("  Number of weekly practice sessions: ");
+
+        List<Lesson> lessons = new ArrayList<>();
+        for (int i = 0; i < nLectures; i++) {
+            Lesson l = new Lesson();
+            l.setType(LessonType.LECTURE);
+            l.setDurationMinutes(90);
+            l.setInstructor(instructor);
+            lessons.add(l);
+        }
+        for (int i = 0; i < nPractices; i++) {
+            Lesson l = new Lesson();
+            l.setType(LessonType.PRACTICE);
+            l.setDurationMinutes(90);
+            l.setInstructor(instructor);
+            lessons.add(l);
+        }
+
+        Map<String, RoomType> rooms = new LinkedHashMap<>();
+        rooms.put("A301", RoomType.LECTURE_HALL);
+        rooms.put("A302", RoomType.LECTURE_HALL);
+        rooms.put("B101", RoomType.LAB);
+        rooms.put("B102", RoomType.LAB);
+        rooms.put("C201", RoomType.SEMINAR_ROOM);
+
+        try {
+            new ScheduleGenerator().generate(lessons, rooms);
+            c.setLessons(lessons);
+            for (Lesson l : lessons) {
+                System.out.printf("  %s %s-%s  %-4s %s%n",
+                        l.getDay(), l.getStartTime(), l.getEndTime(),
+                        l.getRoom(), l.getType());
+            }
+        } catch (ScheduleGenerator.ScheduleConflictException e) {
+            System.out.println("  Failed: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("  Failed: " + e.getMessage());
+        }
+    }
+
 
     private void addCourse(Manager manager) {
         Course c = new Course();
@@ -334,6 +431,9 @@ public final class ConsoleApp {
             System.out.println("4) Publish a paper");
             System.out.println("5) Print my papers (sorted)");
             System.out.println("6) Save state");
+            System.out.println("7) Marks report for a course (bonus)");
+            System.out.println("8) Write recommendation letter (bonus)");
+            System.out.println("9) Mark student attendance (bonus)");
             System.out.println("0) Logout");
             switch (prompt("Choice: ")) {
                 case "1": teacher.viewCourses().forEach(c -> System.out.println("  " + c)); break;
@@ -342,9 +442,51 @@ public final class ConsoleApp {
                 case "4": publishPaper(teacher); break;
                 case "5": printPapers(teacher); break;
                 case "6": sys.saveState(); System.out.println("Saved."); break;
+                case "7": marksReportForTeacher(teacher); break;
+                case "8": writeRecommendationLetter(teacher); break;
+                case "9": markAttendance(teacher); break;
                 case "0": return;
                 default: System.out.println("Unknown option.");
             }
+        }
+    }
+
+    private void marksReportForTeacher(Teacher teacher) {
+        Course c = pickFromList(teacher.viewCourses(), "course");
+        if (c == null) return;
+        try {
+            Report r = teacher.generateMarksReport(c);
+            System.out.println();
+            System.out.println("=== " + r.getTitle() + " ===");
+            System.out.println(r.getContent());
+        } catch (RuntimeException e) {
+            System.out.println("Failed: " + e.getMessage());
+        }
+    }
+
+    private void writeRecommendationLetter(Teacher teacher) {
+        Student s = pickUserOfType(Student.class, "student");
+        if (s == null) return;
+        RecommendationLetter letter = teacher.writeRecommendationLetter(s);
+        System.out.println();
+        System.out.println("--- Recommendation letter ---");
+        System.out.println(letter.getBody());
+        System.out.println("(issued on " + letter.getIssuedOn() + ")");
+    }
+
+    private void markAttendance(Teacher teacher) {
+        Course c = pickFromList(teacher.viewCourses(), "course");
+        if (c == null) return;
+        Student s = pickUserOfType(Student.class, "student");
+        if (s == null) return;
+        LocalDate date = promptDate("  Date (yyyy-mm-dd): ");
+        String p = prompt("  Present? (y/n): ");
+        boolean present = p.equalsIgnoreCase("y") || p.equalsIgnoreCase("yes");
+        try {
+            teacher.markAttendance(s, c, date, present);
+            System.out.println("Recorded.");
+        } catch (RuntimeException e) {
+            System.out.println("Failed: " + e.getMessage());
         }
     }
 
@@ -385,6 +527,7 @@ public final class ConsoleApp {
             System.out.println("4) Rate a teacher");
             System.out.println("5) View supervisor");
             System.out.println("6) Save state");
+            System.out.println("7) View attendance rate for a course (bonus)");
             System.out.println("0) Logout");
             switch (prompt("Choice: ")) {
                 case "1": student.viewMarks().forEach(m -> System.out.println("  " + m)); break;
@@ -399,10 +542,18 @@ public final class ConsoleApp {
                     System.out.println(sup == null ? "  (no supervisor)" : "  " + sup);
                     break;
                 case "6": sys.saveState(); System.out.println("Saved."); break;
+                case "7": viewAttendanceRate(student); break;
                 case "0": return;
                 default: System.out.println("Unknown option.");
             }
         }
+    }
+
+    private void viewAttendanceRate(Student student) {
+        Course c = pickCourse();
+        if (c == null) return;
+        double rate = student.getAttendanceRate(c);
+        System.out.printf("  Attendance rate for %s: %.0f%%%n", c.getName(), rate * 100);
     }
 
     private void registerForCourse(Student student) {

@@ -254,6 +254,63 @@ public final class Main {
         System.out.printf("After:  users=%d, courses=%d%n",
                 reloaded.getUsers().size(), reloaded.getCourses().size());
 
+        // -------------------------------------------------------------
+        // Bonus showcase (14-18). Не входят в обязательную программу,
+        // но дают дополнительные баллы.
+        // -------------------------------------------------------------
+        header("14. Bonus — marks report for the teacher");
+        edu.kbtu.university.system.Report mr = teacher.generateMarksReport(oop);
+        System.out.println(mr.getTitle());
+        System.out.println(mr.getContent());
+
+        header("15. Bonus — recommendation letter from the teacher");
+        edu.kbtu.university.system.RecommendationLetter letter =
+                teacher.writeRecommendationLetter(senior);
+        System.out.println(letter.getBody());
+
+        header("16. Bonus — mark attendance and read attendance rate");
+        teacher.markAttendance(senior, oop, LocalDate.now(), true);
+        teacher.markAttendance(senior, oop, LocalDate.now().plusDays(1), true);
+        teacher.markAttendance(senior, oop, LocalDate.now().plusDays(2), false);
+        System.out.printf("Attendance rate for %s in %s: %.0f%%%n",
+                senior.getFullName(), oop.getName(),
+                senior.getAttendanceRate(oop) * 100);
+
+        header("17. Bonus — advanced regex search across users / courses");
+        System.out.println("Users matching ^Senior:");
+        UniversitySystem.getInstance().findUsersByRegex("^Senior")
+                .forEach(u -> System.out.println("  " + u.getId() + "  " + u.getFullName()));
+        System.out.println("Courses matching ^CS10[0-7]$:");
+        UniversitySystem.getInstance().findCoursesByRegex("^CS10[0-7]$")
+                .forEach(c -> System.out.println("  " + c.getId() + "  " + c.getName()));
+
+        header("18. Bonus — generate a weekly schedule with room-type constraints");
+        java.util.List<edu.kbtu.university.academics.Lesson> lessonBatch = new java.util.ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            edu.kbtu.university.academics.Lesson lec = new edu.kbtu.university.academics.Lesson();
+            lec.setType(edu.kbtu.university.enums.LessonType.LECTURE);
+            lec.setDurationMinutes(90);
+            lec.setInstructor(teacher);
+            lessonBatch.add(lec);
+        }
+        for (int i = 0; i < 2; i++) {
+            edu.kbtu.university.academics.Lesson pr = new edu.kbtu.university.academics.Lesson();
+            pr.setType(edu.kbtu.university.enums.LessonType.PRACTICE);
+            pr.setDurationMinutes(90);
+            pr.setInstructor(teacher);
+            lessonBatch.add(pr);
+        }
+        java.util.LinkedHashMap<String, edu.kbtu.university.enums.RoomType> roomPool =
+                new java.util.LinkedHashMap<>();
+        roomPool.put("A301", edu.kbtu.university.enums.RoomType.LECTURE_HALL);
+        roomPool.put("B101", edu.kbtu.university.enums.RoomType.LAB);
+        new edu.kbtu.university.system.ScheduleGenerator().generate(lessonBatch, roomPool);
+        for (edu.kbtu.university.academics.Lesson l : lessonBatch) {
+            System.out.printf("  %-9s %s-%s  %-4s %s%n",
+                    l.getDay(), l.getStartTime(), l.getEndTime(),
+                    l.getRoom(), l.getType());
+        }
+
         // Clean up the serialization file so subsequent runs start fresh.
         new File(SER_FILE).delete();
 
