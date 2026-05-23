@@ -1,5 +1,6 @@
 package edu.kbtu.university.academics;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
@@ -10,7 +11,10 @@ import edu.kbtu.university.users.Teacher;
  * Represents one scheduled lesson for an academic course.
  * Stores lesson type, room, day, start time, duration and instructor.
  */
-public class Lesson {
+public class Lesson implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private LessonType type;
     private String room;
     private DayOfWeek day;

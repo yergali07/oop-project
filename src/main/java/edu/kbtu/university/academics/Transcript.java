@@ -1,5 +1,6 @@
 package edu.kbtu.university.academics;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,10 @@ import edu.kbtu.university.users.Student;
  * Represents an academic transcript for a student.
  * Stores course marks, calculated GPA and total completed credits.
  */
-public class Transcript {
+public class Transcript implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Student student;
     private Map<Course, Mark> marks;
     private double gpa;

@@ -78,11 +78,31 @@ public class ResearchPaperBuilder {
     }
 
     /**
-     * @param n 
+     * @param n
      * @return
      */
     public ResearchPaperBuilder pages(int n) {
         paper.setPages(n);
+        return this;
+    }
+
+    /**
+     * Sets the abstract.
+     * @param a abstract text
+     * @return this builder
+     */
+    public ResearchPaperBuilder abstractText(String a) {
+        paper.setAbstractText(a);
+        return this;
+    }
+
+    /**
+     * Sets the keyword list.
+     * @param k keyword list (copied defensively by the paper)
+     * @return this builder
+     */
+    public ResearchPaperBuilder keywords(List<String> k) {
+        paper.setKeywords(k == null ? new ArrayList<>() : new ArrayList<>(k));
         return this;
     }
 

@@ -1,10 +1,15 @@
 package edu.kbtu.university.academics;
 
+import java.io.Serializable;
+
 /**
  * Represents a student's mark for a course.
  * Stores first attestation, second attestation, final exam score and total score.
  */
-public class Mark {
+public class Mark implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String studentId;
     private String courseId;
     private double att1;

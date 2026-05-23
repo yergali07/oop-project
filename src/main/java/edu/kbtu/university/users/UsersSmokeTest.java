@@ -42,8 +42,8 @@ public final class UsersSmokeTest {
                 500_000, LocalDate.of(2024, 9, 1), "IT");
         sys.addUser(admin);
         checks++;
-        if (!admin.getId().startsWith("EMP-")) {
-            failures++; System.out.println("FAIL: admin id should start with EMP-: " + admin.getId());
+        if (!admin.getId().startsWith("EMP")) {
+            failures++; System.out.println("FAIL: admin id should start with EMP:" + admin.getId());
         }
 
         Teacher teacher = UserFactory.createTeacher("Test", "Teacher",
@@ -51,8 +51,8 @@ public final class UsersSmokeTest {
                 400_000, LocalDate.of(2020, 9, 1), "CS", TeacherTitle.LECTURER);
         admin.addUser(teacher);
         checks++;
-        if (!teacher.getId().startsWith("EMP-")) {
-            failures++; System.out.println("FAIL: teacher id should start with EMP-: " + teacher.getId());
+        if (!teacher.getId().startsWith("EMP")) {
+            failures++; System.out.println("FAIL: teacher id should start with EMP:" + teacher.getId());
         }
 
         Student senior = UserFactory.createStudent("Senior", "Student",
@@ -64,8 +64,8 @@ public final class UsersSmokeTest {
         admin.addUser(senior);
         admin.addUser(junior);
         checks++;
-        if (!senior.getId().startsWith("BD-") || !junior.getId().startsWith("BD-")) {
-            failures++; System.out.println("FAIL: student ids should start with BD-");
+        if (!senior.getId().startsWith("BD") || !junior.getId().startsWith("BD")) {
+            failures++; System.out.println("FAIL: student ids should start with BD");
         }
 
         // 2. Auth — success

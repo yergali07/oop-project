@@ -1,5 +1,6 @@
 package edu.kbtu.university.users;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -11,8 +12,12 @@ import edu.kbtu.university.research.ResearchProject;
  * projects. Per ТЗ, {@code Teacher}s with the rank {@code PROFESSOR} and
  * {@code ResearchEmployee}s must implement this; {@code Student}s may
  * optionally implement it (typically masters and PhDs do).
+ *
+ * <p>{@code Serializable} so that {@link Student#getSupervisor()} round-trips
+ * through {@link edu.kbtu.university.system.DataStorage} along with the rest
+ * of the system state.
  */
-public interface Researcher {
+public interface Researcher extends Serializable {
 
     /**
      * Returns the researcher's authored papers.
