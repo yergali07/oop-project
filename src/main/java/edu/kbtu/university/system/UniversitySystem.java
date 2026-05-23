@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.kbtu.university.academics.AttendanceRecord;
 import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.exceptions.AuthenticationException;
 import edu.kbtu.university.news.News;
@@ -35,6 +36,7 @@ public class UniversitySystem implements Serializable {
     private List<LogEntry> logs = new ArrayList<>();
     private List<Request> requests = new ArrayList<>();
     private Map<String, List<Integer>> teacherRatings = new HashMap<>();
+    private List<AttendanceRecord> attendance = new ArrayList<>();
 
     private UniversitySystem() {
     }
@@ -104,6 +106,54 @@ public class UniversitySystem implements Serializable {
     }
 
     /**
+     * Advanced search: returns every {@link User} whose id, full name, or
+     * email matches the given regular expression (case-insensitive, partial
+     * match via {@code Matcher.find}). Bonus feature.
+     *
+     * @param pattern Java regular expression
+     * @return list of matching users (possibly empty); never {@code null}
+     * @throws java.util.regex.PatternSyntaxException if the pattern is invalid
+     */
+    public List<User> findUsersByRegex(String pattern) {
+        if (pattern == null || pattern.isBlank()) return new ArrayList<>();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                pattern, java.util.regex.Pattern.CASE_INSENSITIVE);
+        List<User> out = new ArrayList<>();
+        for (User u : users) {
+            String id = u.getId() == null ? "" : u.getId();
+            String name = u.getFullName() == null ? "" : u.getFullName();
+            String email = u.getEmail() == null ? "" : u.getEmail();
+            if (p.matcher(id).find() || p.matcher(name).find() || p.matcher(email).find()) {
+                out.add(u);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Advanced search: returns every {@link Course} whose id or name matches
+     * the given regular expression. Bonus feature.
+     *
+     * @param pattern Java regular expression
+     * @return list of matching courses (possibly empty); never {@code null}
+     * @throws java.util.regex.PatternSyntaxException if the pattern is invalid
+     */
+    public List<Course> findCoursesByRegex(String pattern) {
+        if (pattern == null || pattern.isBlank()) return new ArrayList<>();
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(
+                pattern, java.util.regex.Pattern.CASE_INSENSITIVE);
+        List<Course> out = new ArrayList<>();
+        for (Course c : courses) {
+            String id = c.getId() == null ? "" : c.getId();
+            String name = c.getName() == null ? "" : c.getName();
+            if (p.matcher(id).find() || p.matcher(name).find()) {
+                out.add(c);
+            }
+        }
+        return out;
+    }
+
+    /**
      * Records an action in the audit log. Used by Admin and during the
      * authentication flow.
      */
@@ -141,6 +191,29 @@ public class UniversitySystem implements Serializable {
         List<Integer> ratings = teacherRatings.get(teacher.getId());
         if (ratings == null || ratings.isEmpty()) return 0.0;
         return ratings.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
+    /**
+     * Returns the mutable attendance log. Used by
+     * {@link edu.kbtu.university.users.Teacher#markAttendance} and
+     * {@link edu.kbtu.university.users.Student#getAttendanceRate}.
+     *
+     * @return the attendance log
+     */
+    public List<AttendanceRecord> getAttendance() {
+        if (attendance == null) attendance = new ArrayList<>();
+        return attendance;
+    }
+
+    /**
+     * Appends an attendance entry. Bonus feature.
+     *
+     * @param record entry to append (no-op if {@code null})
+     */
+    public void addAttendance(AttendanceRecord record) {
+        if (record == null) return;
+        if (attendance == null) attendance = new ArrayList<>();
+        attendance.add(record);
     }
 
     public void printAllResearchersPapers(Comparator<ResearchPaper> c) {

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.kbtu.university.academics.AttendanceRecord;
 import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.academics.Mark;
 import edu.kbtu.university.academics.Transcript;
@@ -215,6 +216,30 @@ public class Student extends User implements Researcher, NewsObserver {
             return Collections.emptyList();
         }
         return new ArrayList<>(transcript.getMarks().values());
+    }
+
+    /**
+     * Computes the attendance rate (0..1) for a given course based on
+     * {@link AttendanceRecord} entries in {@link UniversitySystem}.
+     * Returns {@code 0.0} if there are no recorded entries for this
+     * student / course pair. Bonus feature.
+     *
+     * @param c course to compute the rate for
+     * @return value in {@code [0.0, 1.0]}
+     */
+    public double getAttendanceRate(Course c) {
+        if (c == null) return 0.0;
+        List<AttendanceRecord> all = UniversitySystem.getInstance().getAttendance();
+        if (all == null || all.isEmpty()) return 0.0;
+        int seen = 0;
+        int present = 0;
+        for (AttendanceRecord r : all) {
+            if (!this.equals(r.getStudent())) continue;
+            if (!c.equals(r.getCourse())) continue;
+            seen++;
+            if (r.isPresent()) present++;
+        }
+        return seen == 0 ? 0.0 : (double) present / seen;
     }
 
     /**

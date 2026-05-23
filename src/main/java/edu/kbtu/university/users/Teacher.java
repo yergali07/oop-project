@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.kbtu.university.academics.AttendanceRecord;
 import edu.kbtu.university.academics.Course;
 import edu.kbtu.university.academics.Mark;
 import edu.kbtu.university.enums.Role;
@@ -13,6 +14,10 @@ import edu.kbtu.university.enums.TeacherTitle;
 import edu.kbtu.university.research.ResearchPaper;
 import edu.kbtu.university.research.ResearchProfile;
 import edu.kbtu.university.research.ResearchProject;
+import edu.kbtu.university.system.RecommendationLetter;
+import edu.kbtu.university.system.Report;
+import edu.kbtu.university.system.ReportGenerator;
+import edu.kbtu.university.system.UniversitySystem;
 
 /**
  * A teaching member of staff. Per ТЗ, teachers with the rank
@@ -143,6 +148,66 @@ public class Teacher extends Employee implements Researcher {
             return Collections.emptyList();
         }
         return Collections.unmodifiableList(c.getEnrolled());
+    }
+
+    /**
+     * Generates a marks aggregation report for a course the teacher owns —
+     * histogram, average, pass rate, best/worst student. Bonus feature.
+     *
+     * @param c course to report on
+     * @return a {@link Report} with the aggregated text
+     * @throws IllegalArgumentException if {@code c} is {@code null} or not
+     *         taught by this teacher
+     */
+    public Report generateMarksReport(Course c) {
+        if (c == null) {
+            throw new IllegalArgumentException("Course must not be null");
+        }
+        boolean teachesCourse = courses.contains(c) || c.getInstructors().contains(this);
+        if (!teachesCourse) {
+            throw new IllegalArgumentException("Teacher does not teach this course");
+        }
+        return new ReportGenerator().marksReport(c);
+    }
+
+    /**
+     * Issues a {@link RecommendationLetter} for the supplied student. The
+     * body is rendered from the student's transcript (GPA, credits, failed
+     * courses). Bonus feature.
+     *
+     * @param s student the letter is about
+     * @return the freshly rendered letter
+     * @throws IllegalArgumentException if {@code s} is {@code null}
+     */
+    public RecommendationLetter writeRecommendationLetter(Student s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Student must not be null");
+        }
+        return RecommendationLetter.generate(this, s);
+    }
+
+    /**
+     * Marks a student's attendance for one date of a course the teacher
+     * owns. Bonus feature.
+     *
+     * @param s       student
+     * @param c       course (must be one this teacher owns)
+     * @param date    date of the lesson; {@code null} → today
+     * @param present {@code true} if the student attended
+     * @throws IllegalArgumentException if {@code s} / {@code c} is {@code null}
+     *         or the teacher does not own the course
+     */
+    public void markAttendance(Student s, Course c, LocalDate date, boolean present) {
+        if (s == null || c == null) {
+            throw new IllegalArgumentException("Student and course must not be null");
+        }
+        boolean teachesCourse = courses.contains(c) || c.getInstructors().contains(this);
+        if (!teachesCourse) {
+            throw new IllegalArgumentException("Teacher does not teach this course");
+        }
+        AttendanceRecord r = new AttendanceRecord(s, c,
+                date == null ? LocalDate.now() : date, present);
+        UniversitySystem.getInstance().addAttendance(r);
     }
 
     /** {@inheritDoc} */

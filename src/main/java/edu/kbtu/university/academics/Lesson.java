@@ -5,6 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 import edu.kbtu.university.enums.LessonType;
+import edu.kbtu.university.enums.RoomType;
 import edu.kbtu.university.users.Teacher;
 
 /**
@@ -17,6 +18,7 @@ public class Lesson implements Serializable {
 
     private LessonType type;
     private String room;
+    private RoomType roomType;
     private DayOfWeek day;
     private LocalTime startTime;
     private int durationMinutes;
@@ -82,6 +84,26 @@ public class Lesson implements Serializable {
      */
     public void setRoom(String room) {
         this.room = room;
+    }
+
+    /**
+     * Returns the room type required for this lesson (bonus feature).
+     * Used by {@link edu.kbtu.university.system.ScheduleGenerator} when
+     * assigning facilities.
+     *
+     * @return required room type, or {@code null} if unspecified
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * Sets the required room type.
+     *
+     * @param roomType room category
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
 
     /**
