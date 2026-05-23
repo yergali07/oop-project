@@ -65,7 +65,7 @@ public final class Main {
                 UsersSmokeTest.main(args);
                 return;
             case "console":
-                System.out.println("Interactive console is not wired yet — run without arguments for the demo.");
+                ConsoleApp.run();
                 return;
             case "demo":
             default:

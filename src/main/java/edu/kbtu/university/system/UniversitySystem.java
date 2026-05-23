@@ -36,7 +36,7 @@ public class UniversitySystem implements Serializable {
     private List<Request> requests = new ArrayList<>();
     private Map<String, List<Integer>> teacherRatings = new HashMap<>();
 
-    public UniversitySystem() {
+    private UniversitySystem() {
     }
 
     public static synchronized UniversitySystem getInstance() {
